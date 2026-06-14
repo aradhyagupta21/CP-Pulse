@@ -45,35 +45,6 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
     }
   };
 
-  const handleGoogleMock = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      let res;
-      try {
-        // Attempt signup first
-        res = await axios.post(`${BACKEND_URL}/users/signup`, {
-          username: 'GoogleDeveloper',
-          password: 'google_mock_password_123',
-          codeforcesHandle: 'tourist',
-          codechefHandle: 'genghis_khan',
-          leetcodeHandle: 'neal_wu'
-        });
-      } catch (signupErr) {
-        // If username is already taken, log in
-        res = await axios.post(`${BACKEND_URL}/users/login`, {
-          username: 'GoogleDeveloper',
-          password: 'google_mock_password_123'
-        });
-      }
-      onAuthSuccess(res.data);
-    } catch (err) {
-      setError('Google Mock Sign In failed to register on the backend server.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center p-6 relative overflow-hidden font-sans transition-colors duration-300">
       {/* Background Elements for Glassmorphic Glow */}
@@ -212,33 +183,11 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
             </button>
           </form>
 
-          {/* Social Separator */}
-          <div className="flex items-center gap-3 py-1 text-slate-400">
-            <div className="h-px bg-slate-50 flex-1"></div>
-            <span className="text-[10px] uppercase font-bold tracking-widest text-slate-500">or</span>
-            <div className="h-px bg-slate-50 flex-1"></div>
-          </div>
-
-          {/* Google SSO Login */}
-          <button
-            onClick={handleGoogleMock}
-            disabled={loading}
-            className="w-full bg-slate-100 hover:bg-slate-50 border border-slate-800/80 text-slate-400 py-2.5 rounded-xl text-sm font-semibold transition flex items-center justify-center gap-2"
-          >
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-              <path fill="#EA4335" d="M12 5.04c1.67 0 3.2.58 4.38 1.69l3.27-3.27C17.68 1.54 14.98 1 12 1 7.35 1 3.37 3.65 1.42 7.5l3.92 3.04C6.27 7.42 8.92 5.04 12 5.04z"/>
-              <path fill="#4285F4" d="M23.49 12.27c0-.81-.07-1.59-.2-2.35H12v4.45h6.45c-.28 1.48-1.12 2.73-2.38 3.58l3.69 2.87c2.16-1.99 3.42-4.92 3.42-8.55z"/>
-              <path fill="#FBBC05" d="M5.34 14.73C5.1 14.02 4.96 13.27 4.96 12.5s.14-1.52.38-2.23l-3.92-3.04C.5 8.94 0 10.66 0 12.5s.5 3.56 1.42 5.27l3.92-3.04z"/>
-              <path fill="#34A853" d="M12 23c3.24 0 5.97-1.07 7.96-2.91l-3.69-2.87c-1.02.69-2.33 1.1-4.27 1.1-3.08 0-5.73-2.38-6.66-5.5l-3.92 3.04C3.37 20.35 7.35 23 12 23z"/>
-            </svg>
-            <span>Continue with Google</span>
-          </button>
-
           {isCancelable && (
             <button
               type="button"
               onClick={onCancel}
-              className="w-full bg-slate-950 border border-slate-800/80 hover:border-slate-800/80 text-slate-500 hover:text-slate-350 py-2 rounded-xl text-xs font-semibold transition mt-3 flex items-center justify-center"
+              className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-900 text-slate-600 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-350 py-2 rounded-xl text-xs font-semibold transition mt-3 flex items-center justify-center"
             >
               Cancel and Return
             </button>

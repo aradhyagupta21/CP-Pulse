@@ -195,7 +195,7 @@ export default function Goals({ currentUser, goals, onGoalAdd, onGoalDelete }) {
                       <div className="space-y-1">
                         <div className="w-full bg-slate-100 rounded-full h-2">
                           <div 
-                            className={`h-full rounded-full transition-all duration-500 ${goal.isCompleted ? 'bg-gradient-to-r from-emerald-500 to-teal-400' : 'bg-gradient-to-r from-brand-indigo to-brand-cyan'}`}
+                            className={`h-full rounded-full transition-all duration-500 ${goal.isCompleted ? 'bg-emerald-500' : 'bg-brand-indigo'}`}
                             style={{ width: `${percent}%` }}
                           />
                         </div>

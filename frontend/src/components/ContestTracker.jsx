@@ -139,10 +139,10 @@ export default function ContestTracker({ stats, currentUser }) {
       label: `My Syncs${linkedPlatforms.length > 0 ? ` (${linkedPlatforms.length})` : ''}`,
       activeClass: 'bg-brand-indigo text-white text-slate-100 shadow-md shadow-brand-indigo/10'
     },
-    { id: 'all', label: 'All Platforms', activeClass: 'bg-gradient-to-r from-slate-600 to-slate-700 text-slate-100' },
-    { id: 'Codeforces', label: 'Codeforces', activeClass: 'bg-gradient-to-r from-brand-indigo to-blue-600 text-slate-100' },
-    { id: 'CodeChef', label: 'CodeChef', activeClass: 'bg-gradient-to-r from-brand-purple to-violet-600 text-slate-100' },
-    { id: 'LeetCode', label: 'LeetCode', activeClass: 'bg-gradient-to-r from-brand-cyan to-teal-500 text-slate-900' }
+    { id: 'all', label: 'All Platforms', activeClass: 'bg-slate-600 text-slate-100' },
+    { id: 'Codeforces', label: 'Codeforces', activeClass: 'bg-brand-indigo text-slate-100' },
+    { id: 'CodeChef', label: 'CodeChef', activeClass: 'bg-brand-purple text-slate-100' },
+    { id: 'LeetCode', label: 'LeetCode', activeClass: 'bg-brand-cyan text-slate-900' }
   ];
 
   return (

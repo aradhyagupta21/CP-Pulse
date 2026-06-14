@@ -110,7 +110,7 @@ export default function TopicwiseSheet() {
             href={getLeetCodeUrl(topic.name)}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex flex-col justify-between p-5 bg-[#110e1b] border border-slate-800/80 hover:border-brand-indigo/50 hover:shadow-lg hover:shadow-brand-indigo/10 rounded-2xl transition-all cursor-pointer"
+            className="group flex flex-col justify-between p-5 bg-[#110e1b] border border-slate-200 dark:border-slate-800/80 hover:border-brand-indigo/50 hover:shadow-lg hover:shadow-brand-indigo/10 rounded-2xl transition-all cursor-pointer"
           >
             <div className="flex justify-between items-start mb-4">
               <h3 className="font-bold text-slate-100 group-hover:text-brand-indigo transition-colors line-clamp-1">
@@ -119,11 +119,11 @@ export default function TopicwiseSheet() {
               <ExternalLink className="w-4 h-4 text-slate-600 group-hover:text-brand-indigo transition-colors shrink-0" />
             </div>
             
-            <div className="mt-auto pt-4 border-t border-slate-800/80 flex items-center justify-between">
+            <div className="mt-auto pt-4 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between">
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 Problems
               </span>
-              <span className="px-2.5 py-1 bg-slate-800/50 rounded-lg text-xs font-bold text-brand-indigo">
+              <span className="px-2.5 py-1 bg-brand-indigo/10 dark:bg-slate-800/50 rounded-lg text-xs font-bold text-brand-indigo">
                 {topic.count.toLocaleString()}
               </span>
             </div>

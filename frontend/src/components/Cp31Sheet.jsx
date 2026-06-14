@@ -34,8 +34,8 @@ export default function Cp31Sheet() {
       </div>
 
       {/* Codeforces Instructions Section */}
-      <div className="bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-5 mb-5">
+      <div className="bg-[#110e1b] border border-slate-200 dark:border-slate-800/80 p-6 rounded-2xl shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800/80 pb-5 mb-5">
           <h2 className="text-xl font-bold text-slate-100">
             Solve problems on Codeforces
           </h2>
@@ -43,7 +43,7 @@ export default function Cp31Sheet() {
             href="https://codeforces.com/problemset"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-100 rounded-xl font-bold transition"
+            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-brand-indigo/10 dark:bg-slate-800 hover:bg-brand-indigo/20 dark:hover:bg-slate-700 text-brand-indigo dark:text-slate-100 rounded-xl font-bold transition"
           >
             Go to Problemset
             <ExternalLink className="w-4 h-4" />

@@ -123,6 +123,37 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Update user password
+router.put('/:username/password', async (req, res) => {
+  try {
+    const { username } = req.params;
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ error: 'Old password and new password are required.' });
+    }
+
+    const user = await dbHelper.getUserByUsername(username);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    if (user.password !== hashPassword(oldPassword)) {
+      return res.status(401).json({ error: 'Incorrect current password.' });
+    }
+
+    const updated = await dbHelper.updateUser(user._id, { password: hashPassword(newPassword) });
+    
+    if (!updated) {
+      return res.status(500).json({ error: 'Failed to update password.' });
+    }
+
+    res.json({ message: 'Password updated successfully.' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Update user handles and profile
 router.put('/:id', async (req, res) => {
   try {
@@ -254,6 +285,20 @@ router.post('/:id/credentials', async (req, res) => {
 
     const updatedUser = await dbHelper.updateUser(id, updateData);
     res.json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete user
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await dbHelper.deleteUser(id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json({ message: 'User deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

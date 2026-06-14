@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { LayoutDashboard, BarChart3, CalendarRange, Target, Flame, Users, Sparkles, Terminal, LogOut, ChevronRight, Sun, Moon, BookOpen, Shield, Activity, Layers, CheckCircle } from 'lucide-react';
+import { LayoutDashboard, BarChart3, CalendarRange, Target, Flame, Users, Sparkles, Terminal, LogOut, ChevronRight, Sun, Moon, BookOpen, Shield, Activity, Layers, CheckCircle, Trash2 } from 'lucide-react';
 import axios from 'axios';
 import Dashboard from './components/Dashboard';
 import AuthPage from './components/AuthPage';
@@ -26,12 +26,11 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isLoading, setIsLoading] = useState(false);
   const [connError, setConnError] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Mode state — persisted across sessions
-  const [mode, setMode] = useState(() => {
-    const saved = localStorage.getItem('cp_tracker_mode');
-    return saved ? saved : 'dark'; // default: dark
-  });
+  const [mode, setMode] = useState(() => localStorage.getItem('cp_tracker_mode') || 'dark');
 
   useEffect(() => {
     const root = document.documentElement;
@@ -40,9 +39,11 @@ export default function App() {
 
     // Keep class compatibility for tailwind utility extensions
     if (mode === 'dark') {
+      root.classList.add('dark');
       root.classList.remove('light');
     } else {
       root.classList.add('light');
+      root.classList.remove('dark');
     }
   }, [mode]);
 
@@ -117,6 +118,21 @@ export default function App() {
     }
     fetchUsers();
   }, []);
+
+  const handleDeleteAccount = async () => {
+    if (!currentUser) return;
+    setIsDeleting(true);
+    try {
+      await axios.delete(`${BACKEND_URL}/users/${currentUser._id}`);
+      setShowDeleteConfirm(false);
+      handleLogout();
+      fetchUsers();
+    } catch (err) {
+      alert(err.response?.data?.error || "Failed to delete account");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const handleLogout = () => {
     if (!currentUser) return;
@@ -329,15 +345,13 @@ export default function App() {
   return (
     <div className="flex min-h-screen relative overflow-hidden bg-dark-950 font-sans transition-colors duration-300">
       {/* Background Elements for Glassmorphic Glow */}
-      <div className="glow-bg glow-bg-1"></div>
-      <div className="glow-bg glow-bg-2"></div>
-      <div className="glow-bg glow-bg-3"></div>
+      <div className="hidden"></div>
       {/* Sidebar Navigation */}
       <aside className="w-64 border-r border-slate-800/80 bg-dark-900/40 backdrop-blur-xl shrink-0 hidden md:flex flex-col justify-between p-6">
         <div className="space-y-8">
           {/* Logo Brand Header */}
           <div className="flex items-center gap-3">
-            <div className="relative p-2 bg-gradient-to-tr from-brand-cyan to-brand-purple rounded-xl text-blue-950 glow-indigo">
+            <div className="relative p-2 bg-brand-cyan rounded-xl text-slate-900">
               <Shield className="w-6 h-6" />
               <Activity className="w-3 h-3 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" strokeWidth={4} />
             </div>
@@ -368,7 +382,7 @@ export default function App() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group ${isActive ? 'bg-gradient-to-r from-brand-indigo to-brand-purple text-slate-100 shadow-md shadow-brand-indigo/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/20'}`}
+                  className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group ${isActive ? 'bg-brand-indigo text-slate-100 shadow-md shadow-brand-indigo/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/20'}`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon className={`w-4 h-4 ${isActive ? 'text-slate-100' : 'text-slate-400 group-hover:text-slate-200'}`} />
@@ -383,26 +397,30 @@ export default function App() {
 
         {/* Footer info showing connection health and logout option */}
         <div className="pt-4 border-t border-slate-800/50 space-y-3">
-          {/* Appearance Mode Control */}
           <button
             onClick={toggleMode}
-            className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-bold border transition-all duration-300 bg-slate-800/10 hover:bg-slate-800/20 border-slate-700/50 text-slate-300"
+            className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-200 bg-slate-800/20 hover:bg-slate-800/40 border border-slate-700/50 transition mb-2"
           >
-            <div className="flex items-center gap-2">
-              {mode === 'dark' ? <Moon className="w-4 h-4 text-brand-cyan" /> : <Sun className="w-4 h-4 text-brand-indigo" />}
+            <div className="flex items-center gap-3">
+              {mode === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
               <span>Appearance</span>
             </div>
-            <span className="uppercase text-[9px] px-1.5 py-0.5 rounded bg-slate-800/40 border border-slate-700/50 font-semibold tracking-wider">
-              {mode}
-            </span>
+            <span className="capitalize">{mode}</span>
           </button>
-
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold text-red-400 hover:text-red-300 bg-red-950/10 hover:bg-red-950/20 border border-red-900/10 transition"
           >
             <LogOut className="w-4 h-4" />
             <span>Log Out</span>
+          </button>
+
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold text-red-500 hover:text-red-400 bg-red-950/20 hover:bg-red-950/30 border border-red-900/20 transition mt-2"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>Delete Account</span>
           </button>
 
           <div className="text-xs space-y-1" style={{ color: 'var(--text-muted)' }}>
@@ -415,8 +433,39 @@ export default function App() {
         </div>
       </aside>
 
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="absolute inset-0 bg-dark-950/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-[#110e1b] border border-red-900/30 p-6 rounded-2xl max-w-md w-full shadow-2xl shadow-red-900/20 text-center space-y-4">
+            <div className="mx-auto w-12 h-12 bg-red-900/20 text-red-500 rounded-full flex items-center justify-center mb-4">
+              <Trash2 className="w-6 h-6" />
+            </div>
+            <h2 className="text-xl font-bold text-slate-100">Delete Account?</h2>
+            <p className="text-sm text-slate-400">
+              Are you sure you want to permanently delete your account? All your statistics, goals, and history will be wiped. This action cannot be undone.
+            </p>
+            <div className="flex gap-3 pt-4 border-t border-slate-800/80">
+              <button 
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-2 bg-slate-800 text-slate-300 hover:bg-slate-700 rounded-xl font-semibold transition disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleDeleteAccount}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl font-semibold transition shadow-lg shadow-red-900/20 disabled:opacity-50"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete Forever'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Content Area */}
-      <main className="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full overflow-y-auto h-screen relative">
+      <main className="flex-1 p-4 sm:p-6 md:p-10 max-w-7xl mx-auto w-full overflow-y-auto h-screen relative">
         {/* Backend offline warning banner */}
         {connError && (
           <div className="mb-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-between text-amber-300 text-xs font-semibold">
@@ -457,7 +506,7 @@ export default function App() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 transition ${activeTab === tab.id ? 'bg-gradient-to-r from-brand-indigo to-brand-purple text-slate-100' : 'bg-slate-800/30 text-slate-400 hover:text-slate-200'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 transition ${activeTab === tab.id ? 'bg-brand-indigo text-slate-100' : 'bg-slate-800/30 text-slate-400 hover:text-slate-200'}`}
             >
               {tab.label}
             </button>

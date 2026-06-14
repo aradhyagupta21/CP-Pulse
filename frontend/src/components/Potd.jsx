@@ -158,7 +158,7 @@ export default function Potd({ currentUser }) {
         
         {/* LeetCode POTD */}
         {liveLcPotd && (
-          <div className="bg-gradient-to-br from-[#110e1b] to-[#151122] border border-brand-indigo/30 rounded-3xl p-8 shadow-2xl shadow-brand-indigo/5 relative overflow-hidden group">
+          <div className="bg-white dark:bg-[#110e1b] border border-slate-200 dark:border-slate-800/80 rounded-3xl p-8 shadow-sm dark:shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
               <Calendar className="w-32 h-32 text-brand-indigo" />
             </div>
@@ -171,7 +171,7 @@ export default function Potd({ currentUser }) {
                 <span className="text-slate-400 text-sm font-semibold">{liveLcPotd.date}</span>
               </div>
 
-              <h2 className="text-2xl md:text-3xl font-black text-white mb-4 leading-tight flex-1">
+              <h2 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white mb-4 leading-tight flex-1">
                 {liveLcPotd.title}
               </h2>
               
@@ -186,13 +186,13 @@ export default function Potd({ currentUser }) {
                   href={liveLcPotd.link} 
                   target="_blank" 
                   rel="noreferrer"
-                  className="w-full sm:w-auto px-6 py-3 bg-white text-blue-950 font-bold rounded-xl hover:bg-slate-200 transition-colors shadow-lg shadow-white/10 flex items-center justify-center gap-2 text-sm"
+                  className="w-full sm:w-auto px-6 py-3 bg-white dark:bg-slate-800 text-blue-950 dark:text-white font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors shadow-lg shadow-white/10 flex items-center justify-center gap-2 text-sm"
                 >
                   Start Problem <ExternalLink className="w-4 h-4" />
                 </a>
                 <button
                   onClick={() => toggleStatus(liveLcPotd.id, 'potd')}
-                  className={`w-full sm:w-auto px-6 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border text-sm ${isLcSolved ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-emerald-500/20 shadow-lg' : 'bg-slate-800/50 text-slate-300 border-slate-700 hover:bg-brand-purple hover:text-white hover:border-brand-purple'}`}
+                  className={`w-full sm:w-auto px-6 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border text-sm ${isLcSolved ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30' : 'bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-brand-indigo hover:text-white hover:border-brand-indigo'}`}
                 >
                   {isLcSolved ? (
                     <> <CheckCircle2 className="w-4 h-4" /> Completed </>
@@ -207,7 +207,7 @@ export default function Potd({ currentUser }) {
 
         {/* GeeksForGeeks POTD */}
         {liveGfgPotd && (
-          <div className="bg-gradient-to-br from-[#110e1b] to-[#151122] border border-emerald-500/30 rounded-3xl p-8 shadow-2xl shadow-emerald-500/5 relative overflow-hidden group">
+          <div className="bg-white dark:bg-[#110e1b] border border-slate-200 dark:border-slate-800/80 rounded-3xl p-8 shadow-sm dark:shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
               <Calendar className="w-32 h-32 text-emerald-500" />
             </div>
@@ -220,7 +220,7 @@ export default function Potd({ currentUser }) {
                 <span className="text-slate-400 text-sm font-semibold">{liveGfgPotd.date}</span>
               </div>
 
-              <h2 className="text-2xl md:text-3xl font-black text-white mb-4 leading-tight flex-1">
+              <h2 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white mb-4 leading-tight flex-1">
                 {liveGfgPotd.title}
               </h2>
               
@@ -235,13 +235,13 @@ export default function Potd({ currentUser }) {
                   href={liveGfgPotd.link} 
                   target="_blank" 
                   rel="noreferrer"
-                  className="w-full sm:w-auto px-6 py-3 bg-emerald-500 text-blue-950 font-bold rounded-xl hover:bg-emerald-400 transition-colors shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 text-sm"
+                  className="w-full sm:w-auto px-6 py-3 bg-emerald-500 text-white font-bold rounded-xl hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 text-sm"
                 >
                   Start Problem <ExternalLink className="w-4 h-4" />
                 </a>
                 <button
                   onClick={() => toggleStatus(liveGfgPotd.id, 'gfg_potd')}
-                  className={`w-full sm:w-auto px-6 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border text-sm ${isGfgSolved ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-emerald-500/20 shadow-lg' : 'bg-slate-800/50 text-slate-300 border-slate-700 hover:bg-emerald-500 hover:text-blue-950 hover:border-emerald-500'}`}
+                  className={`w-full sm:w-auto px-6 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border text-sm ${isGfgSolved ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30' : 'bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-emerald-500 hover:text-white hover:border-emerald-500'}`}
                 >
                   {isGfgSolved ? (
                     <> <CheckCircle2 className="w-4 h-4" /> Completed </>
@@ -258,18 +258,18 @@ export default function Potd({ currentUser }) {
       {/* Practice Streak Widgets */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-12">
         {/* LeetCode Streak */}
-        <div className="bg-[#110e1b] border border-slate-800/80 rounded-3xl p-8 shadow-2xl flex flex-col items-center justify-center text-center glow-purple relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-brand-purple/5 to-transparent opacity-50 pointer-events-none"></div>
-          <div className="p-4 bg-brand-purple/10 rounded-2xl text-brand-purple mb-6">
+        <div className="bg-white dark:bg-[#110e1b] border border-slate-200 dark:border-slate-800/80 rounded-3xl p-8 shadow-sm dark:shadow-2xl flex flex-col items-center justify-center text-center relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-brand-indigo/5 opacity-50 pointer-events-none"></div>
+          <div className="p-4 bg-brand-indigo/10 rounded-2xl text-brand-indigo mb-6">
             <Flame className="w-10 h-10" />
           </div>
-          <h2 className="text-xl font-bold text-white mb-6">LeetCode Streak Tracker</h2>
+          <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">LeetCode Streak Tracker</h2>
           <div className="flex items-center gap-8">
             <div>
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Solved</p>
-              <div className="text-4xl font-black text-slate-200">{lcPotdProgress.length}</div>
+              <div className="text-4xl font-black text-slate-800 dark:text-slate-200">{lcPotdProgress.length}</div>
             </div>
-            <div className="w-px h-12 bg-slate-800"></div>
+            <div className="w-px h-12 bg-slate-200 dark:bg-slate-800"></div>
             <div>
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Current Streak</p>
               <div className="text-4xl font-black text-brand-purple flex items-baseline gap-1">
@@ -281,18 +281,18 @@ export default function Potd({ currentUser }) {
         </div>
 
         {/* GeeksForGeeks Streak */}
-        <div className="bg-[#110e1b] border border-slate-800/80 rounded-3xl p-8 shadow-2xl flex flex-col items-center justify-center text-center glow-emerald relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-emerald-500/5 to-transparent opacity-50 pointer-events-none"></div>
+        <div className="bg-white dark:bg-[#110e1b] border border-slate-200 dark:border-slate-800/80 rounded-3xl p-8 shadow-sm dark:shadow-2xl flex flex-col items-center justify-center text-center relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-emerald-500/5 opacity-50 pointer-events-none"></div>
           <div className="p-4 bg-emerald-500/10 rounded-2xl text-emerald-500 mb-6">
             <Flame className="w-10 h-10" />
           </div>
-          <h2 className="text-xl font-bold text-white mb-6">GeeksForGeeks Streak Tracker</h2>
+          <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">GeeksForGeeks Streak Tracker</h2>
           <div className="flex items-center gap-8">
             <div>
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Solved</p>
-              <div className="text-4xl font-black text-slate-200">{gfgPotdProgress.length}</div>
+              <div className="text-4xl font-black text-slate-800 dark:text-slate-200">{gfgPotdProgress.length}</div>
             </div>
-            <div className="w-px h-12 bg-slate-800"></div>
+            <div className="w-px h-12 bg-slate-200 dark:bg-slate-800"></div>
             <div>
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Current Streak</p>
               <div className="text-4xl font-black text-emerald-500 flex items-baseline gap-1">

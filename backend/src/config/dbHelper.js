@@ -125,6 +125,39 @@ export const dbHelper = {
     }
   },
 
+  async deleteUser(id) {
+    if (checkMongoConnection()) {
+      await User.findByIdAndDelete(id);
+      await Statistics.deleteMany({ userId: id });
+      await Goal.deleteMany({ userId: id });
+      await SimulationRecord.deleteMany({ userId: id });
+      await SheetProgress.deleteMany({ userId: id });
+      return true;
+    } else {
+      let users = readJSON(USERS_FILE);
+      users = users.filter(u => u._id !== id);
+      writeJSON(USERS_FILE, users);
+
+      let stats = readJSON(STATS_FILE);
+      stats = stats.filter(s => s.userId !== id);
+      writeJSON(STATS_FILE, stats);
+
+      let goals = readJSON(GOALS_FILE);
+      goals = goals.filter(g => g.userId !== id);
+      writeJSON(GOALS_FILE, goals);
+
+      let sims = readJSON(SIMULATIONS_FILE);
+      sims = sims.filter(s => s.userId !== id);
+      writeJSON(SIMULATIONS_FILE, sims);
+
+      let sheet = readJSON(SHEET_FILE);
+      sheet = sheet.filter(s => s.userId !== id);
+      writeJSON(SHEET_FILE, sheet);
+
+      return true;
+    }
+  },
+
   // --- STATISTICS METHODS ---
   async getStatistics(userId) {
     const idStr = userId.toString();

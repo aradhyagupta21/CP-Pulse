@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RefreshCw, UserCheck, Flame, BookOpen, Award, Target, Plus, ShieldCheck, MapPin, GraduationCap, Edit, Share2 } from 'lucide-react';
+import { RefreshCw, UserCheck, Flame, BookOpen, Award, Target, Plus, ShieldCheck, MapPin, GraduationCap, Edit, Share2, Key, HelpCircle } from 'lucide-react';
 import axios from 'axios';
 
 const BACKEND_URL = 'http://localhost:5000/api';
@@ -25,10 +25,44 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
   const [securePassword, setSecurePassword] = useState('');
   const [isAuthing, setIsAuthing] = useState(false);
   const [authStep, setAuthStep] = useState('');
+  const [showGuidelinesModal, setShowGuidelinesModal] = useState(false);
 
+  // Password Modal State
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
+  const [passwordStatus, setPasswordStatus] = useState({ loading: false, error: null, success: false });
 
-
-  // Calculate totals
+  const handlePasswordUpdate = async (e) => {
+    e.preventDefault();
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordStatus({ loading: false, error: "New passwords don't match.", success: false });
+      return;
+    }
+    if (passwordForm.newPassword.length < 6) {
+      setPasswordStatus({ loading: false, error: "New password must be at least 6 characters.", success: false });
+      return;
+    }
+    
+    setPasswordStatus({ loading: true, error: null, success: false });
+    try {
+      await axios.put(`http://localhost:5000/api/users/${currentUser.username}/password`, {
+        oldPassword: passwordForm.oldPassword,
+        newPassword: passwordForm.newPassword
+      });
+      setPasswordStatus({ loading: false, error: null, success: true });
+      setTimeout(() => {
+        setShowPasswordModal(false);
+        setPasswordStatus({ loading: false, error: null, success: false });
+        setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
+      }, 1500);
+    } catch (err) {
+      setPasswordStatus({ 
+        loading: false, 
+        error: err.response?.data?.error || "Failed to update password", 
+        success: false 
+      });
+    }
+  };  // Calculate totals
   const totalSolved = stats.reduce((sum, s) => sum + (s.solvedCount || 0), 0);
   const cfRating = stats.find(s => s.platform === 'Codeforces')?.currentRating || 0;
   const ccRating = stats.find(s => s.platform === 'CodeChef')?.currentRating || 0;
@@ -234,7 +268,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
               </p>
             </>
           ) : (
-            <div className="flex items-center gap-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start md:items-center gap-4 sm:gap-6 text-center sm:text-left">
               {/* Profile Avatar */}
               <div className="w-24 h-24 rounded-2xl bg-brand-indigo flex items-center justify-center text-white text-3xl font-black shadow-lg">
                 {(currentUser.fullName || currentUser.username).substring(0, 2).toUpperCase()}
@@ -246,7 +280,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                   {currentUser.fullName || currentUser.username}
                 </h1>
                 
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-2 text-sm">
                   <span className="font-semibold text-brand-indigo">@{currentUser.username}</span>
                   {currentUser.location && (
                     <span className="flex items-center gap-1 text-slate-400">
@@ -288,7 +322,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
 
           <button
             onClick={onAddAccount}
-            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-100 px-4 py-2 rounded-xl text-sm font-semibold transition"
+            className="flex items-center gap-2 bg-brand-indigo/10 dark:bg-slate-800 hover:bg-brand-indigo/20 dark:hover:bg-slate-700 text-brand-indigo dark:text-slate-100 px-4 py-2 rounded-xl text-sm font-semibold transition"
           >
             <Plus className="w-4 h-4" /> Account
           </button>
@@ -302,9 +336,16 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                 <Edit className="w-4 h-4" /> Edit Profile
               </button>
               <button
+                onClick={() => setShowPasswordModal(true)}
+                className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-semibold transition shadow-sm"
+              >
+                <Key className="w-4 h-4" /> Change Password
+              </button>
+              <button
+                onClick={() => setShowGuidelinesModal(true)}
                 className="flex items-center justify-center bg-[#110e1b] border border-slate-800/80 hover:border-brand-indigo/20 text-slate-400 hover:text-brand-indigo w-9 h-9 rounded-xl transition"
               >
-                <Share2 className="w-4 h-4" />
+                <HelpCircle className="w-4 h-4" />
               </button>
             </>
           )}
@@ -459,6 +500,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                         value={secureHandle} 
                         onChange={(e) => setSecureHandle(e.target.value)}
                         placeholder="Enter platform handle"
+                        autoComplete="off"
                         className="w-full bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-brand-indigo/20"
                       />
                     </div>
@@ -469,6 +511,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                         value={securePassword} 
                         onChange={(e) => setSecurePassword(e.target.value)}
                         placeholder="••••••••"
+                        autoComplete="new-password"
                         className="w-full bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-brand-indigo/20"
                       />
                     </div>
@@ -492,6 +535,134 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
               )}
             </form>
           )}
+        </div>
+      )}
+
+      {/* Edit Password Modal */}
+      {showPasswordModal && (
+        <div className="bg-[#110e1b] border border-slate-200 dark:border-slate-800/80 p-6 rounded-2xl max-w-xl mx-auto space-y-5 shadow-sm mb-8">
+          <div className="flex justify-between items-center pb-3 border-b border-slate-200 dark:border-slate-800/80">
+            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Change Password</h2>
+            <button
+              onClick={() => setShowPasswordModal(false)}
+              className="text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-bold text-xl"
+            >
+              &times;
+            </button>
+          </div>
+
+          {passwordStatus.error && <div className="p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-500/40 rounded-xl text-red-600 dark:text-red-300 text-sm">{passwordStatus.error}</div>}
+          {passwordStatus.success && <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-300 dark:border-emerald-500/40 rounded-xl text-emerald-600 dark:text-emerald-400 text-sm">Password updated successfully!</div>}
+
+          <form onSubmit={handlePasswordUpdate} className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Current Password</label>
+              <input
+                type="password"
+                required
+                value={passwordForm.oldPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, oldPassword: e.target.value })}
+                autoComplete="current-password"
+                className="w-full bg-slate-50 dark:bg-[#0f0c18] border border-slate-200 dark:border-slate-800/80 rounded-xl px-4 py-3 text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-brand-indigo transition"
+                placeholder="Enter current password"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">New Password</label>
+              <input
+                type="password"
+                required
+                value={passwordForm.newPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                autoComplete="new-password"
+                className="w-full bg-slate-50 dark:bg-[#0f0c18] border border-slate-200 dark:border-slate-800/80 rounded-xl px-4 py-3 text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-brand-indigo transition"
+                placeholder="Enter new password"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Confirm New Password</label>
+              <input
+                type="password"
+                required
+                value={passwordForm.confirmPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                autoComplete="new-password"
+                className="w-full bg-slate-50 dark:bg-[#0f0c18] border border-slate-200 dark:border-slate-800/80 rounded-xl px-4 py-3 text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-brand-indigo transition"
+                placeholder="Confirm new password"
+              />
+            </div>
+
+            <div className="flex gap-3 pt-4 border-t border-slate-200 dark:border-slate-800/80 mt-6">
+              <button
+                type="button"
+                onClick={() => setShowPasswordModal(false)}
+                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={passwordStatus.loading || passwordStatus.success}
+                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-brand-indigo hover:opacity-90 transition shadow-md disabled:opacity-50"
+              >
+                {passwordStatus.loading ? 'Updating...' : 'Update Password'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Guidelines Modal */}
+      {showGuidelinesModal && (
+        <div className="bg-[#110e1b] border border-slate-200 dark:border-slate-800/80 p-8 rounded-2xl max-w-2xl mx-auto space-y-6 shadow-sm mb-8 text-slate-800 dark:text-slate-100">
+          <div className="flex justify-between items-center pb-3 border-b border-slate-200 dark:border-slate-800/80">
+            <h2 className="text-2xl font-bold">CP Tracker Guidelines</h2>
+            <button
+              onClick={() => setShowGuidelinesModal(false)}
+              className="text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-bold text-2xl"
+            >
+              &times;
+            </button>
+          </div>
+          
+          <div className="space-y-6 text-sm leading-relaxed">
+            <div>
+              <h3 className="text-lg font-bold text-brand-indigo mb-2">Profile Linking</h3>
+              <p className="mb-2">You need to link your:</p>
+              <ul className="list-disc pl-5 space-y-1 mb-4">
+                <li>CodeChef ID</li>
+                <li>Codeforces ID</li>
+                <li>LeetCode ID</li>
+              </ul>
+              
+              <p className="font-bold mb-2">Steps to Link Your Profiles:</p>
+              <ol className="list-decimal pl-5 space-y-1">
+                <li>Click on <strong>Edit Profile</strong>.</li>
+                <li>Click on <strong>Simulated Password Auth</strong>.</li>
+                <li>Complete the authentication process.</li>
+                <li>Add your respective platform IDs and save the changes.</li>
+              </ol>
+            </div>
+            
+            <div className="border-t border-slate-200 dark:border-slate-800/80 pt-4">
+              <h3 className="text-lg font-bold text-brand-indigo mb-2">Features of the Platform</h3>
+              <ul className="list-disc pl-5 space-y-2">
+                <li>Track your coding performance across multiple platforms.</li>
+                <li>Daily <strong>Problem of the Day (POTD)</strong> with direct links to LeetCode and GFG.</li>
+                <li>Solve problems <strong>topic-wise</strong> as well as <strong>rating-wise</strong>.</li>
+                <li>Add and manage your personal tasks.</li>
+                <li>Join the <strong>Leaderboard</strong> and compete with your friends.</li>
+                <li>Get timely updates about upcoming coding contests.</li>
+                <li>Access an <strong>AI Coach</strong> for guidance, recommendations, and improvement strategies.</li>
+              </ul>
+            </div>
+            
+            <div className="pt-4 pb-2">
+              <p className="font-medium text-slate-500 dark:text-slate-400 italic">
+                Start by linking your profiles and explore the features to make your competitive programming journey more structured and productive.
+              </p>
+            </div>
+          </div>
         </div>
       )}
 

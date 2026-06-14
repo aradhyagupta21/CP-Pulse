@@ -332,7 +332,7 @@ export default function ContestSimulator({ currentUser }) {
             <button 
               onClick={handleEvaluate}
               disabled={isLoading}
-              className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl text-slate-100 font-bold hover:opacity-95 transition flex items-center gap-2"
+              className="px-8 py-3 bg-emerald-500 rounded-xl text-slate-100 font-bold hover:opacity-95 transition flex items-center gap-2"
             >
               {isLoading ? <RotateCcw className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />}
               Finish & Evaluate
@@ -344,7 +344,7 @@ export default function ContestSimulator({ currentUser }) {
       {/* Stage 3: Results */}
       {evaluation && (
         <div className="space-y-6">
-          <div className="bg-[#110e1b] border border-slate-800/80 p-8 rounded-2xl border border-brand-indigo/20 bg-gradient-to-br from-dark-900 to-dark-950 text-center relative overflow-hidden">
+          <div className="bg-[#110e1b] border border-slate-800/80 p-8 rounded-2xl bg-dark-900 text-center relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-brand-indigo/10 rounded-full blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-indigo/10 rounded-full blur-3xl"></div>
             
