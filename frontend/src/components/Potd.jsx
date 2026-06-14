@@ -4,83 +4,49 @@ import { Calendar, CheckCircle2, ExternalLink, Flame, Search, ChevronRight, Zap 
 
 const BACKEND_URL = 'http://localhost:5000/api';
 
-// Famous problems for historical fallback
-const historicalProblems = [
-  { title: "Merge Two Sorted Lists", id: "merge-two-sorted-lists", difficulty: "Easy" },
-  { title: "Valid Parentheses", id: "valid-parentheses", difficulty: "Easy" },
-  { title: "Remove Nth Node From End of List", id: "remove-nth-node-from-end-of-list", difficulty: "Medium" },
-  { title: "4Sum", id: "4sum", difficulty: "Medium" },
-  { title: "Letter Combinations of a Phone Number", id: "letter-combinations-of-a-phone-number", difficulty: "Medium" },
-  { title: "3Sum Closest", id: "3sum-closest", difficulty: "Medium" },
-  { title: "3Sum", id: "3sum", difficulty: "Medium" },
-  { title: "Longest Common Prefix", id: "longest-common-prefix", difficulty: "Easy" },
-  { title: "Roman to Integer", id: "roman-to-integer", difficulty: "Easy" },
-  { title: "Integer to Roman", id: "integer-to-roman", difficulty: "Medium" },
-  { title: "Container With Most Water", id: "container-with-most-water", difficulty: "Medium" },
-  { title: "Regular Expression Matching", id: "regular-expression-matching", difficulty: "Hard" },
-  { title: "Palindrome Number", id: "palindrome-number", difficulty: "Easy" },
-  { title: "String to Integer (atoi)", id: "string-to-integer-atoi", difficulty: "Medium" },
-  { title: "Reverse Integer", id: "reverse-integer", difficulty: "Medium" },
-  { title: "Zigzag Conversion", id: "zigzag-conversion", difficulty: "Medium" },
-  { title: "Longest Palindromic Substring", id: "longest-palindromic-substring", difficulty: "Medium" },
-  { title: "Median of Two Sorted Arrays", id: "median-of-two-sorted-arrays", difficulty: "Hard" },
-  { title: "Longest Substring Without Repeating Characters", id: "longest-substring-without-repeating-characters", difficulty: "Medium" },
-  { title: "Add Two Numbers", id: "add-two-numbers", difficulty: "Medium" },
-  { title: "Two Sum", id: "two-sum", difficulty: "Easy" }
-];
-
 export default function Potd({ currentUser }) {
-  const [livePotd, setLivePotd] = useState(null);
-  const [history, setHistory] = useState([]);
+  const [liveLcPotd, setLiveLcPotd] = useState(null);
+  const [liveGfgPotd, setLiveGfgPotd] = useState(null);
+  
   const [progress, setProgress] = useState({});
-  const [potdProgress, setPotdProgress] = useState([]);
+  const [lcPotdProgress, setLcPotdProgress] = useState([]);
+  const [gfgPotdProgress, setGfgPotdProgress] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Generate the last 20 days dynamically
-  useEffect(() => {
-    const generatedHistory = [];
-    for (let i = 1; i <= 20; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().split('T')[0];
-      const prob = historicalProblems[i - 1];
-      
-      generatedHistory.push({
-        date: dateStr,
-        title: prob.title,
-        id: prob.id,
-        difficulty: prob.difficulty,
-        link: `https://leetcode.com/problems/${prob.id}/`
-      });
-    }
-    setHistory(generatedHistory);
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      try {
-        // Fetch Live POTD
-        const potdRes = await axios.get(`${BACKEND_URL}/potd`);
-        setLivePotd(potdRes.data);
-      } catch (err) {
-        console.error('Failed to fetch live POTD:', err);
-      }
+      
+      // Fetch Live POTDs
+      Promise.allSettled([
+        axios.get(`${BACKEND_URL}/potd`),
+        axios.get(`${BACKEND_URL}/potd/gfg`)
+      ]).then((results) => {
+        if (results[0].status === 'fulfilled') setLiveLcPotd(results[0].value.data);
+        else console.error('Failed to fetch LeetCode POTD', results[0].reason);
+        
+        if (results[1].status === 'fulfilled') setLiveGfgPotd(results[1].value.data);
+        else console.error('Failed to fetch GFG POTD', results[1].reason);
+      });
 
       // Fetch user progress
       if (currentUser?._id) {
         try {
           const res = await axios.get(`${BACKEND_URL}/sheet/${currentUser._id}`);
           const progressMap = {};
-          const pProgress = [];
+          const lcProg = [];
+          const gfgProg = [];
+          
           res.data.forEach(item => {
             progressMap[item.problemId] = item.status;
-            if (item.patternId === 'potd' && item.status === 'solved') {
-              pProgress.push(item);
+            if (item.status === 'solved') {
+              if (item.patternId === 'potd') lcProg.push(item);
+              if (item.patternId === 'gfg_potd') gfgProg.push(item);
             }
           });
           setProgress(progressMap);
-          setPotdProgress(pProgress);
+          setLcPotdProgress(lcProg);
+          setGfgPotdProgress(gfgProg);
         } catch (err) {
           console.error('Failed to load sheet progress:', err);
         }
@@ -90,7 +56,7 @@ export default function Potd({ currentUser }) {
     fetchData();
   }, [currentUser]);
 
-  const toggleStatus = async (problemId) => {
+  const toggleStatus = async (problemId, patternId) => {
     if (!currentUser?._id) return;
     const currentStatus = progress[problemId];
     const newStatus = currentStatus === 'solved' ? 'unsolved' : 'solved';
@@ -101,17 +67,21 @@ export default function Potd({ currentUser }) {
       const res = await axios.post(`${BACKEND_URL}/sheet/update`, {
         userId: currentUser._id,
         problemId,
-        patternId: 'potd',
+        patternId,
         status: newStatus
       });
-      // Optionally update local potdProgress state here to immediately reflect streak change
-      if (newStatus === 'solved') {
-        setPotdProgress(prev => [...prev, res.data]);
-      } else {
-        setPotdProgress(prev => prev.filter(p => p.problemId !== problemId));
+      
+      if (patternId === 'potd') {
+        if (newStatus === 'solved') setLcPotdProgress(prev => [...prev, res.data]);
+        else setLcPotdProgress(prev => prev.filter(p => p.problemId !== problemId));
+      } else if (patternId === 'gfg_potd') {
+        if (newStatus === 'solved') setGfgPotdProgress(prev => [...prev, res.data]);
+        else setGfgPotdProgress(prev => prev.filter(p => p.problemId !== problemId));
       }
     } catch (err) {
       console.error('Failed to update status:', err);
+      // Revert optimistic update
+      setProgress(prev => ({ ...prev, [problemId]: currentStatus }));
     }
   };
 
@@ -124,6 +94,40 @@ export default function Potd({ currentUser }) {
     }
   };
 
+  const calculateStreak = (progressArray) => {
+    if (progressArray.length === 0) return 0;
+    const dates = [...new Set(
+      progressArray
+        .map(p => p.updatedAt ? new Date(p.updatedAt) : null)
+        .filter(d => d && !isNaN(d.valueOf()))
+        .map(d => d.toISOString().split('T')[0])
+    )].sort();
+    if (dates.length === 0) return 0;
+    
+    let currentStreak = 0;
+    const todayStr = new Date().toISOString().split('T')[0];
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    
+    if (dates.includes(todayStr) || dates.includes(yesterdayStr)) {
+      currentStreak = 1;
+      let check = dates.includes(todayStr) ? todayStr : yesterdayStr;
+      while (true) {
+        const d = new Date(check + 'T00:00:00Z');
+        d.setUTCDate(d.getUTCDate() - 1);
+        const prev = d.toISOString().split('T')[0];
+        if (dates.includes(prev)) {
+          currentStreak++;
+          check = prev;
+        } else {
+          break;
+        }
+      }
+    }
+    return currentStreak;
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -132,7 +136,8 @@ export default function Potd({ currentUser }) {
     );
   }
 
-  const isLiveSolved = livePotd && progress[livePotd.id] === 'solved';
+  const isLcSolved = liveLcPotd && progress[liveLcPotd.id] === 'solved';
+  const isGfgSolved = liveGfgPotd && progress[liveGfgPotd.id] === 'solved';
 
   return (
     <div className="animate-fadeIn space-y-8 pb-12">
@@ -148,116 +153,157 @@ export default function Potd({ currentUser }) {
         </div>
       </div>
 
-      {/* Hero Section: Live POTD */}
-      {livePotd && (
-        <div className="bg-gradient-to-br from-[#110e1b] to-[#151122] border border-brand-indigo/30 rounded-3xl p-8 shadow-2xl shadow-brand-indigo/5 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-            <Calendar className="w-32 h-32 text-brand-indigo" />
-          </div>
-          
-          <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="px-3 py-1 bg-brand-indigo/20 text-brand-indigo font-bold text-xs rounded-lg border border-brand-indigo/30 uppercase tracking-widest flex items-center gap-2">
-                <Zap className="w-3 h-3" /> Live Today
-              </span>
-              <span className="text-slate-400 text-sm font-semibold">{livePotd.date}</span>
+      {/* Hero Section: Live POTDs */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        {/* LeetCode POTD */}
+        {liveLcPotd && (
+          <div className="bg-gradient-to-br from-[#110e1b] to-[#151122] border border-brand-indigo/30 rounded-3xl p-8 shadow-2xl shadow-brand-indigo/5 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+              <Calendar className="w-32 h-32 text-brand-indigo" />
             </div>
-
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
-              {livePotd.title}
-            </h2>
             
-            <div className="flex flex-wrap items-center gap-4 mb-10">
-              <span className={`px-3 py-1 rounded-lg text-xs font-bold border ${getDifficultyColor(livePotd.difficulty)}`}>
-                {livePotd.difficulty}
-              </span>
-            </div>
+            <div className="relative z-10 flex flex-col h-full">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="px-3 py-1 bg-brand-indigo/20 text-brand-indigo font-bold text-xs rounded-lg border border-brand-indigo/30 uppercase tracking-widest flex items-center gap-2">
+                  <Zap className="w-3 h-3" /> LeetCode
+                </span>
+                <span className="text-slate-400 text-sm font-semibold">{liveLcPotd.date}</span>
+              </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-4">
-              <a 
-                href={livePotd.link} 
-                target="_blank" 
-                rel="noreferrer"
-                className="w-full sm:w-auto px-8 py-4 bg-white text-blue-950 font-bold rounded-xl hover:bg-slate-200 transition-colors shadow-lg shadow-white/10 flex items-center justify-center gap-2"
-              >
-                Start Problem <ExternalLink className="w-4 h-4" />
-              </a>
-              <button
-                onClick={() => toggleStatus(livePotd.id)}
-                className={`w-full sm:w-auto px-8 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border ${isLiveSolved ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-emerald-500/20 shadow-lg' : 'bg-slate-800/50 text-slate-300 border-slate-700 hover:bg-brand-purple hover:text-white hover:border-brand-purple'}`}
-              >
-                {isLiveSolved ? (
-                  <> <CheckCircle2 className="w-5 h-5" /> Completed </>
-                ) : (
-                  'Mark as Solved'
-                )}
-              </button>
+              <h2 className="text-2xl md:text-3xl font-black text-white mb-4 leading-tight flex-1">
+                {liveLcPotd.title}
+              </h2>
+              
+              <div className="flex flex-wrap items-center gap-4 mb-10">
+                <span className={`px-3 py-1 rounded-lg text-xs font-bold border ${getDifficultyColor(liveLcPotd.difficulty)}`}>
+                  {liveLcPotd.difficulty}
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center gap-4 mt-auto">
+                <a 
+                  href={liveLcPotd.link} 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="w-full sm:w-auto px-6 py-3 bg-white text-blue-950 font-bold rounded-xl hover:bg-slate-200 transition-colors shadow-lg shadow-white/10 flex items-center justify-center gap-2 text-sm"
+                >
+                  Start Problem <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  onClick={() => toggleStatus(liveLcPotd.id, 'potd')}
+                  className={`w-full sm:w-auto px-6 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border text-sm ${isLcSolved ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-emerald-500/20 shadow-lg' : 'bg-slate-800/50 text-slate-300 border-slate-700 hover:bg-brand-purple hover:text-white hover:border-brand-purple'}`}
+                >
+                  {isLcSolved ? (
+                    <> <CheckCircle2 className="w-4 h-4" /> Completed </>
+                  ) : (
+                    'Mark as Solved'
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* GeeksForGeeks POTD */}
+        {liveGfgPotd && (
+          <div className="bg-gradient-to-br from-[#110e1b] to-[#151122] border border-emerald-500/30 rounded-3xl p-8 shadow-2xl shadow-emerald-500/5 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+              <Calendar className="w-32 h-32 text-emerald-500" />
+            </div>
+            
+            <div className="relative z-10 flex flex-col h-full">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 font-bold text-xs rounded-lg border border-emerald-500/30 uppercase tracking-widest flex items-center gap-2">
+                  <Zap className="w-3 h-3" /> GeeksforGeeks
+                </span>
+                <span className="text-slate-400 text-sm font-semibold">{liveGfgPotd.date}</span>
+              </div>
+
+              <h2 className="text-2xl md:text-3xl font-black text-white mb-4 leading-tight flex-1">
+                {liveGfgPotd.title}
+              </h2>
+              
+              <div className="flex flex-wrap items-center gap-4 mb-10">
+                <span className={`px-3 py-1 rounded-lg text-xs font-bold border ${getDifficultyColor(liveGfgPotd.difficulty)}`}>
+                  {liveGfgPotd.difficulty}
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center gap-4 mt-auto">
+                <a 
+                  href={liveGfgPotd.link} 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="w-full sm:w-auto px-6 py-3 bg-emerald-500 text-blue-950 font-bold rounded-xl hover:bg-emerald-400 transition-colors shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 text-sm"
+                >
+                  Start Problem <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  onClick={() => toggleStatus(liveGfgPotd.id, 'gfg_potd')}
+                  className={`w-full sm:w-auto px-6 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border text-sm ${isGfgSolved ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-emerald-500/20 shadow-lg' : 'bg-slate-800/50 text-slate-300 border-slate-700 hover:bg-emerald-500 hover:text-blue-950 hover:border-emerald-500'}`}
+                >
+                  {isGfgSolved ? (
+                    <> <CheckCircle2 className="w-4 h-4" /> Completed </>
+                  ) : (
+                    'Mark as Solved'
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Practice Streak Widgets */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-12">
+        {/* LeetCode Streak */}
+        <div className="bg-[#110e1b] border border-slate-800/80 rounded-3xl p-8 shadow-2xl flex flex-col items-center justify-center text-center glow-purple relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-brand-purple/5 to-transparent opacity-50 pointer-events-none"></div>
+          <div className="p-4 bg-brand-purple/10 rounded-2xl text-brand-purple mb-6">
+            <Flame className="w-10 h-10" />
+          </div>
+          <h2 className="text-xl font-bold text-white mb-6">LeetCode Streak Tracker</h2>
+          <div className="flex items-center gap-8">
+            <div>
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Solved</p>
+              <div className="text-4xl font-black text-slate-200">{lcPotdProgress.length}</div>
+            </div>
+            <div className="w-px h-12 bg-slate-800"></div>
+            <div>
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Current Streak</p>
+              <div className="text-4xl font-black text-brand-purple flex items-baseline gap-1">
+                {calculateStreak(lcPotdProgress)}
+                <span className="text-sm font-bold text-slate-500">Days</span>
+              </div>
             </div>
           </div>
         </div>
-      )}
 
-      {/* Practice Streak Widget */}
-      <div className="bg-[#110e1b] border border-slate-800/80 rounded-3xl overflow-hidden mt-12 p-8 shadow-2xl flex flex-col items-center justify-center text-center glow-purple relative">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-brand-purple/5 to-transparent opacity-50 pointer-events-none"></div>
-        
-        <div className="p-4 bg-brand-purple/10 rounded-2xl text-brand-purple mb-6 animate-pulse">
-          <Flame className="w-12 h-12" />
-        </div>
-        
-        <h2 className="text-2xl font-bold text-white mb-2">Practice Streak Tracker</h2>
-        <p className="text-slate-400 text-sm mb-8 max-w-sm">Consistency is key to mastering algorithms. Complete the Problem of the Day to build your streak!</p>
-        
-        <div className="flex items-center gap-10">
-          <div>
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Total Solved</p>
-            <div className="text-5xl font-black text-slate-200">
-              {potdProgress.length}
-            </div>
+        {/* GeeksForGeeks Streak */}
+        <div className="bg-[#110e1b] border border-slate-800/80 rounded-3xl p-8 shadow-2xl flex flex-col items-center justify-center text-center glow-emerald relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-emerald-500/5 to-transparent opacity-50 pointer-events-none"></div>
+          <div className="p-4 bg-emerald-500/10 rounded-2xl text-emerald-500 mb-6">
+            <Flame className="w-10 h-10" />
           </div>
-          <div className="w-px h-16 bg-slate-800"></div>
-          <div>
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Current Streak</p>
-            <div className="text-5xl font-black text-brand-purple flex items-baseline gap-2">
-              {(() => {
-                if (potdProgress.length === 0) return 0;
-                // Safely calculate streak avoiding undefined updatedAt errors
-                const dates = [...new Set(
-                  potdProgress
-                    .map(p => p.updatedAt ? new Date(p.updatedAt) : null)
-                    .filter(d => d && !isNaN(d.valueOf()))
-                    .map(d => d.toISOString().split('T')[0])
-                )].sort();
-                if (dates.length === 0) return 0;
-                
-                let currentStreak = 0;
-                const todayStr = new Date().toISOString().split('T')[0];
-                const yesterday = new Date();
-                yesterday.setDate(yesterday.getDate() - 1);
-                const yesterdayStr = yesterday.toISOString().split('T')[0];
-                
-                if (dates.includes(todayStr) || dates.includes(yesterdayStr)) {
-                  currentStreak = 1;
-                  let check = dates.includes(todayStr) ? todayStr : yesterdayStr;
-                  while (true) {
-                    const d = new Date(check + 'T00:00:00Z');
-                    d.setUTCDate(d.getUTCDate() - 1);
-                    const prev = d.toISOString().split('T')[0];
-                    if (dates.includes(prev)) {
-                      currentStreak++;
-                      check = prev;
-                    } else {
-                      break;
-                    }
-                  }
-                }
-                return currentStreak;
-              })()}
-              <span className="text-xl font-bold text-slate-500">Days</span>
+          <h2 className="text-xl font-bold text-white mb-6">GeeksForGeeks Streak Tracker</h2>
+          <div className="flex items-center gap-8">
+            <div>
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Solved</p>
+              <div className="text-4xl font-black text-slate-200">{gfgPotdProgress.length}</div>
+            </div>
+            <div className="w-px h-12 bg-slate-800"></div>
+            <div>
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Current Streak</p>
+              <div className="text-4xl font-black text-emerald-500 flex items-baseline gap-1">
+                {calculateStreak(gfgPotdProgress)}
+                <span className="text-sm font-bold text-slate-500">Days</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      
     </div>
   );
 }

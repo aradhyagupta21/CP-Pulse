@@ -47,4 +47,26 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/potd/gfg
+// Fetches the live Problem of the Day from GeeksforGeeks
+router.get('/gfg', async (req, res) => {
+  try {
+    const response = await axios.get('https://practiceapi.geeksforgeeks.org/api/vr/problems-of-day/problem/today/');
+    if (response.data && response.data.problem_name) {
+      res.json({
+        date: response.data.date.split(' ')[0],
+        link: response.data.problem_url,
+        id: response.data.problem_id.toString(),
+        title: response.data.problem_name,
+        difficulty: response.data.difficulty
+      });
+    } else {
+      res.status(500).json({ error: 'Unexpected response format from GFG' });
+    }
+  } catch (error) {
+    console.error('Error fetching GFG POTD:', error.message);
+    res.status(500).json({ error: 'Failed to fetch POTD from GeeksforGeeks' });
+  }
+});
+
 export default router;
