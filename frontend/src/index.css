@@ -238,6 +238,8 @@ html[data-mode="light"] .border-slate-800\/80 { border-color: rgba(229,231,235,0
 /* ================================================================
    BACKGROUND OVERRIDES FOR LIGHT MODE (nav, modals, cards)
    ================================================================ */
+html[data-mode="light"] .bg-slate-800      { background-color: #f1f5f9 !important; }
+html[data-mode="light"] .bg-slate-900      { background-color: #ffffff !important; }
 html[data-mode="light"] .bg-slate-800\/30  { background-color: #ffffff !important; }
 html[data-mode="light"] .bg-slate-800\/20  { background-color: #ffffff !important; }
 html[data-mode="light"] .bg-dark-900\/60   { background-color: #ffffff !important; }

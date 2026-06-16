@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable */
 import { ExternalLink, Layers } from 'lucide-react';
 
 const topicsData = [

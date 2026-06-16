@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
-import { RefreshCw, UserCheck, Flame, BookOpen, Award, Target, Plus, ShieldCheck, MapPin, GraduationCap, Edit, Share2, Key, HelpCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { RefreshCw, UserCheck, Flame, BookOpen, Award, Target, Plus, ShieldCheck, MapPin, GraduationCap, Edit, Key, HelpCircle } from 'lucide-react';
 import axios from 'axios';
 
-const BACKEND_URL = 'http://localhost:5000/api';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
 
 export default function Dashboard({ currentUser, stats, goals, onSync, isLoading, allUsers, onUserSelect, onUserUpdate, onAddAccount }) {
   const [error, setError] = useState('');
+  const [syncCooldown, setSyncCooldown] = useState(0);
+
+  // Timer for sync cooldown
+  useEffect(() => {
+    let timer;
+    if (syncCooldown > 0) {
+      timer = setTimeout(() => setSyncCooldown(syncCooldown - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [syncCooldown]);
 
   // Editing state for active profiles handles
   const [showEditHandles, setShowEditHandles] = useState(false);
@@ -45,7 +55,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
     
     setPasswordStatus({ loading: true, error: null, success: false });
     try {
-      await axios.put(`http://localhost:5000/api/users/${currentUser.username}/password`, {
+      await axios.put(`${BACKEND_URL}/users/${currentUser.username}/password`, {
         oldPassword: passwordForm.oldPassword,
         newPassword: passwordForm.newPassword
       });
@@ -346,6 +356,18 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                 className="flex items-center justify-center bg-[#110e1b] border border-slate-800/80 hover:border-brand-indigo/20 text-slate-400 hover:text-brand-indigo w-9 h-9 rounded-xl transition"
               >
                 <HelpCircle className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => {
+                  onSync();
+                  setSyncCooldown(30); // 30 seconds delay/cooldown
+                }}
+                disabled={isLoading || syncCooldown > 0}
+                className="flex items-center justify-center gap-2 bg-[#110e1b] border border-slate-800/80 hover:border-brand-cyan/40 text-slate-400 hover:text-brand-cyan px-3 py-1.5 rounded-xl transition disabled:opacity-50"
+                title="Sync Live Profiles"
+              >
+                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-brand-cyan' : ''}`} />
+                {syncCooldown > 0 && <span className="text-xs font-mono">{syncCooldown}s</span>}
               </button>
             </>
           )}
@@ -660,6 +682,9 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
             <div className="pt-4 pb-2">
               <p className="font-medium text-slate-500 dark:text-slate-400 italic">
                 Start by linking your profiles and explore the features to make your competitive programming journey more structured and productive.
+                <br /><br />
+                <span className="font-bold block mt-2">All the Best</span>
+                <span className="font-bold">-Aradhya Gupta</span>
               </p>
             </div>
           </div>
@@ -934,7 +959,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
             Please register a new competitive programming profile or select an existing one to begin aggregating statistics, syncing history, and analyzing code performance.
           </p>
           <button
-            onClick={() => setShowReg(true)}
+            onClick={onAddAccount}
             className="bg-brand-indigo text-white hover:opacity-95 text-slate-100 px-6 py-2.5 rounded-xl font-bold transition inline-block"
           >
             Create Profile Handle

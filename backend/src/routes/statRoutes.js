@@ -85,25 +85,11 @@ router.post('/:userId/sync', async (req, res) => {
   }
 });
 
-// Fetch Leaderboard for a user (includes self and friends)
+// Fetch Global Leaderboard
 router.get('/leaderboard/:userId', async (req, res) => {
   try {
-    const { userId } = req.params;
-    const user = await dbHelper.getUserById(userId);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    const leaderboardUsers = [user];
-    
-    // Fetch all friends
-    const friends = user.friends || [];
-    for (const friendName of friends) {
-      const friendObj = await dbHelper.getUserByUsername(friendName);
-      if (friendObj) {
-        leaderboardUsers.push(friendObj);
-      }
-    }
+    // Fetch all users to create a global leaderboard
+    const leaderboardUsers = await dbHelper.getUsers();
 
     const results = [];
     for (const u of leaderboardUsers) {
@@ -113,23 +99,37 @@ router.get('/leaderboard/:userId', async (req, res) => {
       const ccStat = uStats.find(s => s.platform === 'CodeChef');
       const lcStat = uStats.find(s => s.platform === 'LeetCode');
 
+      const cfRating = cfStat ? cfStat.currentRating : 0;
+      const ccRating = ccStat ? ccStat.currentRating : 0;
+      const lcRating = lcStat ? lcStat.currentRating : 0;
+
+      let sumRatings = 0;
+      let countPlatforms = 0;
+
+      if (cfRating > 0) { sumRatings += cfRating; countPlatforms++; }
+      if (ccRating > 0) { sumRatings += ccRating; countPlatforms++; }
+      if (lcRating > 0) { sumRatings += lcRating; countPlatforms++; }
+
+      const averageRating = countPlatforms > 0 ? Math.round(sumRatings / countPlatforms) : 0;
+
       const totalSolved = uStats.reduce((acc, s) => acc + (s.solvedCount || 0), 0);
       
       results.push({
         userId: u._id,
         username: u.username,
-        codeforcesRating: cfStat ? cfStat.currentRating : 0,
-        codechefRating: ccStat ? ccStat.currentRating : 0,
+        codeforcesRating: cfRating,
+        codechefRating: ccRating,
         leetcodeSolved: lcStat ? lcStat.solvedCount : 0,
         totalSolved,
+        averageRating,
         codeforcesHandle: u.codeforcesHandle,
         codechefHandle: u.codechefHandle,
         leetcodeHandle: u.leetcodeHandle
       });
     }
 
-    // Sort by totalSolved desc by default
-    results.sort((a, b) => b.totalSolved - a.totalSolved);
+    // Sort by averageRating desc by default
+    results.sort((a, b) => b.averageRating - a.averageRating);
     res.json(results);
   } catch (error) {
     console.error('Leaderboard error for userId', req.params.userId, error);

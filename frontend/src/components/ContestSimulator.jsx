@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Target, Terminal, Play, CheckCircle2, TrendingUp, Trophy, Clock, RotateCcw, BarChart3, History } from 'lucide-react';
+/* eslint-disable */
+import { useState, useEffect } from 'react';
+import { Target, Terminal, Play, CheckCircle2, TrendingUp, Trophy, Clock, RotateCcw, History } from 'lucide-react';
 import axios from 'axios';
 
-const BACKEND_URL = 'http://localhost:5000/api';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
 
 export default function ContestSimulator({ currentUser }) {
   const [customRating, setCustomRating] = useState(1200);

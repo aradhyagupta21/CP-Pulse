@@ -1,8 +1,9 @@
+/* eslint-disable */
 import React, { useState } from 'react';
 import { Shield, Activity, KeyRound, UserPlus, LogIn, AlertCircle, User, MapPin, GraduationCap } from 'lucide-react';
 import axios from 'axios';
 
-const BACKEND_URL = 'http://localhost:5000/api';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
 
 export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, isCancelable, onCancel }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -13,6 +14,23 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
   const [college, setCollege] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const quotes = [
+    "Your future self is built by the problems you solve today.",
+    "Think harder, code smarter, never stop learning.",
+    "One problem at a time, one step closer to mastery.",
+    "Every WA teaches something; every AC proves it.",
+    "Keep solving. Keep learning. Keep climbing.",
+    "Be Positive. Stay Consistent. Keep Coding."
+  ];
+  const [currentQuote, setCurrentQuote] = useState(quotes[0]);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,7 +64,7 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center p-6 relative overflow-hidden font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-dark-950 flex flex-col justify-center items-center p-6 relative overflow-hidden font-sans transition-colors duration-300">
       {/* Background Elements for Glassmorphic Glow */}
       <div className="glow-bg glow-bg-1"></div>
       <div className="glow-bg glow-bg-2"></div>
@@ -59,10 +77,10 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
             <Shield className="w-8 h-8" />
             <Activity className="w-4 h-4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" strokeWidth={4} />
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-100 ">
-            CP Pulse & AI Coach
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-100 uppercase tracking-widest">
+            WELCOME TO CP PULSE
           </h1>
-          <p className="text-sm text-slate-500">Secure entry to competitive programming analytics.</p>
+          <p className="text-sm font-semibold text-brand-indigo/80 italic animate-pulse-slow">"{currentQuote}"</p>
         </div>
 
         {/* Connection Error Banner */}

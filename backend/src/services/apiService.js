@@ -123,8 +123,8 @@ export const apiService = {
           const problemId = `${sub.problem.contestId}-${sub.problem.index}`;
           const isOK = sub.verdict === 'OK';
 
-          // Collect recent submission log (keep top 10)
-          if (recentSubmissions.length < 15) {
+          // Collect recent submission log for streak calculation (keep up to 365 days)
+          if (recentSubmissions.length < 365) {
             recentSubmissions.push({
               problemName: sub.problem.name,
               problemUrl: `https://codeforces.com/contest/${sub.problem.contestId}/problem/${sub.problem.index}`,
@@ -286,9 +286,9 @@ export const apiService = {
         'Strings': Math.round(solvedCount * 0.05)
       };
 
-      // Format recent submissions from calendar timestamps
+      // Format recent submissions from calendar timestamps for streak calculation
       const timestamps = Object.keys(submissionCalendar).sort((a, b) => b - a);
-      timestamps.slice(0, 15).forEach((ts, idx) => {
+      timestamps.slice(0, 365).forEach((ts, idx) => {
         const count = submissionCalendar[ts];
         const date = new Date(parseInt(ts) * 1000);
         recentSubmissions.push({

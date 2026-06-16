@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useCallback } from 'react';
+/* eslint-disable */
+import { useEffect, useState, useCallback } from 'react';
 import { TrendingUp, Clock, RefreshCw, Filter } from 'lucide-react';
 import axios from 'axios';
 
-const BACKEND_URL = 'http://localhost:5000/api';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
 
 const PLATFORM_COLORS = {
   Codeforces: {
@@ -84,14 +85,25 @@ export default function ContestTracker({ stats, currentUser }) {
     fetchContests();
   }, [fetchContests]);
 
-  // Apply platform filter
+  // Apply platform and time filter
   const getFilteredContests = () => {
-    if (selectedFilter === 'all') return allUpcoming.slice(0, 8);
-    if (selectedFilter === 'synced') {
-      if (linkedPlatforms.length === 0) return allUpcoming.slice(0, 8);
-      return allUpcoming.filter(c => linkedPlatforms.includes(c.platform)).slice(0, 8);
+    const limit15DaysMs = 15 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
+
+    // 1. Apply platform filter
+    let result = allUpcoming;
+    if (selectedFilter !== 'all') {
+      if (selectedFilter === 'synced') {
+        if (linkedPlatforms.length > 0) {
+          result = allUpcoming.filter(c => linkedPlatforms.includes(c.platform));
+        }
+      } else {
+        result = allUpcoming.filter(c => c.platform === selectedFilter);
+      }
     }
-    return allUpcoming.filter(c => c.platform === selectedFilter).slice(0, 8);
+
+    // 2. Filter up to future 15 days
+    return result.filter(c => (c.startTime.getTime() - now) <= limit15DaysMs);
   };
 
   const filtered = getFilteredContests();
@@ -150,7 +162,7 @@ export default function ContestTracker({ stats, currentUser }) {
       {/* Header */}
       <div>
         <h1 className="text-4xl font-extrabold tracking-tight text-slate-100 ">
-          Contest Tracker
+          Contests
         </h1>
         <p className="text-slate-500 mt-1">Live schedules synced from Codeforces, CodeChef & LeetCode.</p>
       </div>

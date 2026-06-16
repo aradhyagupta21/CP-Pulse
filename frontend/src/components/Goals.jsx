@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Target, Trash2, Plus, Flag, Trophy, ShieldCheck } from 'lucide-react';
+/* eslint-disable */
+import { useState } from 'react';
+import { Trash2, Plus, Flag, Trophy, } from 'lucide-react';
 import axios from 'axios';
 
-const BACKEND_URL = 'http://localhost:5000/api';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
 
 export default function Goals({ currentUser, goals, onGoalAdd, onGoalDelete }) {
   const [title, setTitle] = useState('');

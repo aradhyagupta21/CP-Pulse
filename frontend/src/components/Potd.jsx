@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable */
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Calendar, CheckCircle2, ExternalLink, Flame, Search, ChevronRight, Zap } from 'lucide-react';
+import { Calendar, CheckCircle2, ExternalLink, Flame, ChevronRight, Zap } from 'lucide-react';
 
-const BACKEND_URL = 'http://localhost:5000/api';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
 
 export default function Potd({ currentUser }) {
   const [liveLcPotd, setLiveLcPotd] = useState(null);

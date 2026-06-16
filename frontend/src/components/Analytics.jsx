@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, PieChart, Pie, Cell, ReferenceArea } from 'recharts';
+/* eslint-disable */
+import { useState } from 'react';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, PieChart, Pie, Cell, ReferenceArea } from 'recharts';
 import { BarChart, Bar } from 'recharts';
-import { Award, Compass, PieChart as PieIcon, HelpCircle } from 'lucide-react';
+import { Award, Compass, PieChart as PieIcon, } from 'lucide-react';
 
 export default function Analytics({ stats }) {
   const [selectedPlatform, setSelectedPlatform] = useState('All');

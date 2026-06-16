@@ -5,7 +5,6 @@ import { connectDB } from './config/db.js';
 import userRoutes from './routes/userRoutes.js';
 import statRoutes from './routes/statRoutes.js';
 import goalRoutes from './routes/goalRoutes.js';
-import aiRoutes from './routes/aiRoutes.js';
 import contestRoutes from './routes/contestRoutes.js';
 import simulatorRoutes from './routes/simulatorRoutes.js';
 import sheetRoutes from './routes/sheetRoutes.js';
@@ -38,7 +37,6 @@ app.get('/', (req, res) => {
 app.use('/api/users', userRoutes);
 app.use('/api/stats', statRoutes);
 app.use('/api/goals', goalRoutes);
-app.use('/api/ai', aiRoutes);
 app.use('/api/contests', contestRoutes);
 app.use('/api/simulator', simulatorRoutes);
 app.use('/api/sheet', sheetRoutes);
@@ -81,6 +79,9 @@ const dailySyncAllUsers = async () => {
       }
 
       await Promise.all(syncPromises);
+
+      // Add a 2-second delay between users to prevent hitting rate limits
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
       // Sync user goals
       const updatedStats = await dbHelper.getStatistics(userId);

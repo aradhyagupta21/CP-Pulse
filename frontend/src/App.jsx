@@ -7,13 +7,14 @@ import Analytics from './components/Analytics';
 import Goals from './components/Goals';
 import ContestTracker from './components/ContestTracker';
 import Leaderboard from './components/Leaderboard';
-import AiAnalyzer from './components/AiAnalyzer';
+
 import ContestSimulator from './components/ContestSimulator';
 import Potd from './components/Potd';
 import TopicwiseSheet from './components/TopicwiseSheet';
 import Cp31Sheet from './components/Cp31Sheet';
+import StriverSheet from './components/StriverSheet';
 
-const BACKEND_URL = 'http://localhost:5000/api';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
 
 export default function App() {
   const [allUsers, setAllUsers] = useState([]);
@@ -303,8 +304,8 @@ export default function App() {
         );
       case 'simulator':
         return <ContestSimulator currentUser={currentUser} />;
-      case 'coach':
-        return <AiAnalyzer currentUser={currentUser} stats={stats} />;
+      case 'striver':
+        return <StriverSheet currentUser={currentUser} />;
       case 'topics':
         return <TopicwiseSheet currentUser={currentUser} />;
       case 'cp31':
@@ -370,10 +371,10 @@ export default function App() {
               { id: 'potd', label: 'Problem of the day', icon: CalendarRange },
               { id: 'topics', label: 'Topicwise Problems', icon: Layers },
               { id: 'cp31', label: 'CP-31 Sheet', icon: CheckCircle },
+              { id: 'striver', label: "Striver's A2Z Sheet", icon: BookOpen },
               { id: 'simulator', label: 'Virtual Contest', icon: Terminal },
               { id: 'goals', label: 'Target Goals', icon: Target },
               { id: 'leaderboard', label: 'Leaderboard', icon: Users },
-              { id: 'coach', label: 'AI Coach', icon: Sparkles },
             ].map(tab => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -498,10 +499,10 @@ export default function App() {
             { id: 'potd', label: 'Problem of the day' },
             { id: 'topics', label: 'Topicwise Problems' },
             { id: 'cp31', label: 'CP-31 Sheet' },
+            { id: 'striver', label: "Striver's A2Z Sheet" },
             { id: 'simulator', label: 'Virtual Contest' },
             { id: 'goals', label: 'Goals' },
             { id: 'leaderboard', label: 'Social' },
-            { id: 'coach', label: 'AI Coach' },
           ].map(tab => (
             <button
               key={tab.id}
