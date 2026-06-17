@@ -7,6 +7,31 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     trim: true
   },
+  email: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  phone: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  branch: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  graduationYear: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  cgpa: {
+    type: String,
+    trim: true,
+    default: ''
+  },
   password: {
     type: String,
     required: true

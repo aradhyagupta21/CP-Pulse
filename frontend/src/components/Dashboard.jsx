@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { RefreshCw, UserCheck, Flame, BookOpen, Award, Target, Plus, ShieldCheck, MapPin, GraduationCap, Edit, Key, HelpCircle } from 'lucide-react';
+import { RefreshCw, UserCheck, Flame, BookOpen, Award, Target, Plus, ShieldCheck, MapPin, GraduationCap, Edit, Key, HelpCircle, User } from 'lucide-react';
 import axios from 'axios';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
@@ -7,6 +7,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/a
 export default function Dashboard({ currentUser, stats, goals, onSync, isLoading, allUsers, onUserSelect, onUserUpdate, onAddAccount }) {
   const [error, setError] = useState('');
   const [syncCooldown, setSyncCooldown] = useState(0);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   // Timer for sync cooldown
   useEffect(() => {
@@ -18,6 +19,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
   }, [syncCooldown]);
 
   // Editing state for active profiles handles
+  const [showMyProfileModal, setShowMyProfileModal] = useState(false);
   const [showEditHandles, setShowEditHandles] = useState(false);
   const [editCfHandle, setEditCfHandle] = useState('');
   const [editCcHandle, setEditCcHandle] = useState('');
@@ -26,6 +28,12 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
   const [editFullName, setEditFullName] = useState('');
   const [editLocation, setEditLocation] = useState('');
   const [editCollege, setEditCollege] = useState('');
+  const [editBranch, setEditBranch] = useState('');
+  const [editGraduationYear, setEditGraduationYear] = useState('');
+  const [editCgpa, setEditCgpa] = useState('');
+  const [editEmail, setEditEmail] = useState('');
+  const [editCountryCode, setEditCountryCode] = useState('+91');
+  const [editPhone, setEditPhone] = useState('');
   const [isSavingHandles, setIsSavingHandles] = useState(false);
 
   // States for simulated secure authentication linking
@@ -183,7 +191,22 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
     setEditFullName(currentUser?.fullName || '');
     setEditLocation(currentUser?.location || '');
     setEditCollege(currentUser?.college || '');
+    setEditBranch(currentUser?.branch || '');
+    setEditGraduationYear(currentUser?.graduationYear || '');
+    setEditCgpa(currentUser?.cgpa || '');
+    setEditEmail(currentUser?.email || '');
+    let cCode = '+91';
+    let pNum = currentUser?.phone || '';
+    if (pNum && pNum.includes(' ')) {
+      const parts = pNum.split(' ');
+      cCode = parts[0];
+      pNum = parts.slice(1).join(' ');
+    }
+    setEditCountryCode(cCode);
+    setEditPhone(pNum);
     setError('');
+    setShowMyProfileModal(false);
+    setShowPasswordModal(false);
     setShowEditHandles(true);
   };
 
@@ -194,9 +217,14 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
     try {
       const res = await axios.put(`${BACKEND_URL}/users/${currentUser._id}`, {
         username: editUsername.trim(),
+        email: editEmail.trim(),
+        phone: editPhone.trim() ? `${editCountryCode} ${editPhone.trim()}` : '',
         fullName: editFullName.trim(),
         location: editLocation.trim(),
         college: editCollege.trim(),
+        branch: editBranch.trim(),
+        graduationYear: editGraduationYear.trim(),
+        cgpa: editCgpa.trim(),
         codeforcesHandle: editCfHandle.trim(),
         codechefHandle: editCcHandle.trim(),
         leetcodeHandle: editLcHandle.trim()
@@ -281,7 +309,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
             <div className="flex flex-col sm:flex-row items-center sm:items-start md:items-center gap-4 sm:gap-6 text-center sm:text-left">
               {/* Profile Avatar */}
               <div className="w-24 h-24 rounded-2xl bg-brand-indigo flex items-center justify-center text-white text-3xl font-black shadow-lg">
-                {(currentUser.fullName || currentUser.username).substring(0, 2).toUpperCase()}
+                {(currentUser.fullName || currentUser.username || '??').substring(0, 2).toUpperCase()}
               </div>
               
               {/* Profile Details */}
@@ -292,114 +320,203 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                 
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-2 text-sm">
                   <span className="font-semibold text-brand-indigo">@{currentUser.username}</span>
-                  {currentUser.location && (
-                    <span className="flex items-center gap-1 text-slate-400">
-                      <MapPin className="w-3.5 h-3.5" /> {currentUser.location}
-                    </span>
-                  )}
                 </div>
-                
-                {currentUser.college && (
-                  <div className="flex items-center gap-1.5 text-sm text-slate-500 mt-1">
-                    <GraduationCap className="w-4 h-4" /> {currentUser.college}
-                  </div>
-                )}
               </div>
             </div>
           )}
         </div>
 
-        {/* User Selection Panel */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 bg-[#110e1b] border border-slate-800/80 px-4 py-2 rounded-xl border border-slate-800/80">
-            <UserCheck className="w-5 h-5 text-brand-indigo" />
-            <select 
-              value={currentUser?._id || ''} 
-              onChange={(e) => onUserSelect(e.target.value)}
-              className="bg-transparent text-slate-100 outline-none border-none cursor-pointer text-sm font-medium"
+        {/* Action Icons Panel */}
+        <div className="flex items-center gap-3 relative">
+          
+          {currentUser && (
+            <button
+              onClick={() => {
+                onSync();
+                setSyncCooldown(30); // 30 seconds delay/cooldown
+              }}
+              disabled={isLoading || syncCooldown > 0}
+              className="flex items-center justify-center bg-[#110e1b] border border-slate-800/80 hover:border-brand-cyan/40 text-slate-400 hover:text-brand-cyan w-10 h-10 rounded-xl transition disabled:opacity-50 relative"
+              title="Sync Live Profiles"
             >
-              {allUsers.length === 0 ? (
-                <option value="">No Users Registered</option>
-              ) : (
-                allUsers.map(u => (
-                  <option key={u._id} value={u._id} className="bg-[#110e1b] text-slate-100">
-                    {u.username}
-                  </option>
-                ))
-              )}
-            </select>
-          </div>
+              <RefreshCw className={`w-5 h-5 ${isLoading ? 'animate-spin text-brand-cyan' : ''}`} />
+              {syncCooldown > 0 && <span className="absolute -top-2 -right-2 bg-brand-cyan text-black text-[10px] font-bold px-1.5 py-0.5 rounded-full">{syncCooldown}</span>}
+            </button>
+          )}
 
           <button
-            onClick={onAddAccount}
-            className="flex items-center gap-2 bg-brand-indigo/10 dark:bg-slate-800 hover:bg-brand-indigo/20 dark:hover:bg-slate-700 text-brand-indigo dark:text-slate-100 px-4 py-2 rounded-xl text-sm font-semibold transition"
+            onClick={() => setShowGuidelinesModal(true)}
+            className="flex items-center justify-center bg-[#110e1b] border border-slate-800/80 hover:border-brand-indigo/20 text-slate-400 hover:text-brand-indigo w-10 h-10 rounded-xl transition"
+            title="Guidelines"
           >
-            <Plus className="w-4 h-4" /> Account
+            <HelpCircle className="w-5 h-5" />
           </button>
 
-          {currentUser && (
-            <>
-              <button
-                onClick={handleStartEdit}
-                className="flex items-center gap-2 bg-brand-indigo text-white hover:opacity-95 px-4 py-2 rounded-xl text-sm font-semibold transition shadow-md shadow-brand-indigo/20"
-              >
-                <Edit className="w-4 h-4" /> Edit Profile
-              </button>
-              <button
-                onClick={() => setShowPasswordModal(true)}
-                className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-semibold transition shadow-sm"
-              >
-                <Key className="w-4 h-4" /> Change Password
-              </button>
-              <button
-                onClick={() => setShowGuidelinesModal(true)}
-                className="flex items-center justify-center bg-[#110e1b] border border-slate-800/80 hover:border-brand-indigo/20 text-slate-400 hover:text-brand-indigo w-9 h-9 rounded-xl transition"
-              >
-                <HelpCircle className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => {
-                  onSync();
-                  setSyncCooldown(30); // 30 seconds delay/cooldown
-                }}
-                disabled={isLoading || syncCooldown > 0}
-                className="flex items-center justify-center gap-2 bg-[#110e1b] border border-slate-800/80 hover:border-brand-cyan/40 text-slate-400 hover:text-brand-cyan px-3 py-1.5 rounded-xl transition disabled:opacity-50"
-                title="Sync Live Profiles"
-              >
-                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-brand-cyan' : ''}`} />
-                {syncCooldown > 0 && <span className="text-xs font-mono">{syncCooldown}s</span>}
-              </button>
-            </>
+          <button
+            onClick={() => setShowProfileMenu(!showProfileMenu)}
+            className="flex items-center justify-center bg-brand-indigo hover:opacity-90 text-slate-100 w-10 h-10 rounded-xl transition relative shadow-lg shadow-brand-indigo/20"
+            title="Profile Menu"
+          >
+            <User className="w-5 h-5" />
+          </button>
+
+          {/* Profile Dropdown Menu */}
+          {showProfileMenu && (
+            <div className="absolute right-0 top-14 w-64 bg-[#110e1b] border border-slate-800/80 rounded-2xl shadow-xl shadow-black/50 overflow-hidden z-50 animate-fadeIn">
+              <div className="p-4 border-b border-slate-800/80 bg-slate-800/20">
+                <p className="text-xs text-slate-500 font-semibold mb-2 uppercase tracking-wider">Switch Account</p>
+                <div className="flex items-center gap-2 bg-[#110e1b] border border-slate-700 px-3 py-2 rounded-lg">
+                  <UserCheck className="w-4 h-4 text-brand-indigo" />
+                  <select 
+                    value={currentUser?._id || ''} 
+                    onChange={(e) => {
+                      onUserSelect(e.target.value);
+                      setShowProfileMenu(false);
+                    }}
+                    className="bg-transparent text-slate-100 outline-none border-none cursor-pointer text-sm font-medium w-full"
+                  >
+                    {allUsers.length === 0 ? (
+                      <option value="">No Users</option>
+                    ) : (
+                      allUsers.map(u => (
+                        <option key={u._id} value={u._id} className="bg-[#110e1b] text-slate-100">
+                          {u.username}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                </div>
+              </div>
+
+              <div className="p-2 flex flex-col gap-1">
+                {currentUser && (
+                  <>
+                    <button
+                      onClick={() => {
+                        setShowEditHandles(false);
+                        setShowPasswordModal(false);
+                        setShowMyProfileModal(true);
+                        setShowProfileMenu(false);
+                      }}
+                      className="flex items-center gap-3 text-slate-300 hover:bg-[#FAF3E0] hover:text-slate-900 w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition"
+                    >
+                      <User className="w-4 h-4" /> My Profile
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleStartEdit();
+                        setShowProfileMenu(false);
+                      }}
+                      className="flex items-center gap-3 text-slate-300 hover:bg-[#FAF3E0] hover:text-slate-900 w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition"
+                    >
+                      <Edit className="w-4 h-4" /> Edit Profile
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowMyProfileModal(false);
+                        setShowEditHandles(false);
+                        setShowPasswordModal(true);
+                        setShowProfileMenu(false);
+                      }}
+                      className="flex items-center gap-3 text-slate-300 hover:bg-[#FAF3E0] hover:text-slate-900 w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition"
+                    >
+                      <Key className="w-4 h-4" /> Change Password
+                    </button>
+                  </>
+                )}
+                <button
+                  onClick={() => {
+                    onAddAccount();
+                    setShowProfileMenu(false);
+                  }}
+                  className="flex items-center gap-3 text-slate-300 hover:bg-[#FAF3E0] hover:text-slate-900 w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition"
+                >
+                  <Plus className="w-4 h-4" /> Add New Account
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Overlay to close menu when clicking outside */}
+          {showProfileMenu && (
+            <div 
+              className="fixed inset-0 z-40"
+              onClick={() => setShowProfileMenu(false)}
+            />
           )}
         </div>
       </div>
+
+      {/* My Profile modal */}
+      {showMyProfileModal && currentUser && (
+        <div className="bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl max-w-2xl mx-auto space-y-5 shadow-sm mb-6 animate-fadeIn">
+          <div className="flex justify-between items-center pb-3 border-b border-slate-800/80">
+            <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2"><User className="w-5 h-5 text-brand-indigo"/> My Profile</h2>
+            <button
+              onClick={() => setShowMyProfileModal(false)}
+              className="text-slate-500 hover:text-slate-300 transition"
+            >
+              Close
+            </button>
+          </div>
+          <div className="space-y-4">
+            <div className="bg-slate-800/20 p-4 rounded-xl border border-slate-800/50">
+              <p className="text-xs font-bold text-brand-indigo uppercase tracking-wider mb-3">Personal Details</p>
+              <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] gap-4 items-start border-b border-slate-800/50 pb-3">
+                  <span className="text-slate-500 text-sm pt-0.5">Name</span>
+                  <span className="text-slate-200 font-medium break-words">{currentUser.fullName || currentUser.username || '—'}</span>
+                </div>
+                <div className="grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] gap-4 items-start border-b border-slate-800/50 pb-3">
+                  <span className="text-slate-500 text-sm pt-0.5">Username</span>
+                  <span className="text-slate-200 font-medium break-words">{currentUser.username || '—'}</span>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-slate-800/50 pb-3">
+                  <div className="grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] gap-4 items-start">
+                    <span className="text-slate-500 text-sm pt-0.5">Branch</span>
+                    <span className="text-slate-200 font-medium break-words">{currentUser.branch || '—'}</span>
+                  </div>
+                  <div className="grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] gap-4 items-start">
+                    <span className="text-slate-500 text-sm pt-0.5">CGPA</span>
+                    <span className="text-slate-200 font-medium break-words">{currentUser.cgpa || '—'}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] gap-4 items-start border-b border-slate-800/50 pb-3">
+                  <span className="text-slate-500 text-sm pt-0.5">College</span>
+                  <span className="text-slate-200 font-medium break-words">{currentUser.college || '—'}</span>
+                </div>
+                <div className="grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] gap-4 items-start border-b border-slate-800/50 pb-3">
+                  <span className="text-slate-500 text-sm pt-0.5">Grad Year</span>
+                  <span className="text-slate-200 font-medium break-words">{currentUser.graduationYear || '—'}</span>
+                </div>
+                <div className="grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] gap-4 items-start border-b border-slate-800/50 pb-3">
+                  <span className="text-slate-500 text-sm pt-0.5">Email</span>
+                  <span className="text-slate-200 font-medium break-words">{currentUser.email || '—'}</span>
+                </div>
+                <div className="grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] gap-4 items-start border-b border-slate-800/50 pb-3">
+                  <span className="text-slate-500 text-sm pt-0.5">Phone</span>
+                  <span className="text-slate-200 font-medium break-words">{currentUser.phone || '—'}</span>
+                </div>
+                <div className="grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] gap-4 items-start">
+                  <span className="text-slate-500 text-sm pt-0.5">Location</span>
+                  <span className="text-slate-200 font-medium break-words">{currentUser.location || '—'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Edit handles modal/form */}
       {showEditHandles && (
         <div className="bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl border border-slate-800/80 max-w-xl mx-auto space-y-5 shadow-sm">
           <div className="flex justify-between items-center pb-3 border-b border-slate-800/80">
             <h2 className="text-xl font-bold text-slate-100">Edit Profile & Platforms</h2>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => { setActiveLinkTab('quick'); setError(''); }}
-                className={`px-3 py-1 rounded-lg text-xs font-bold transition ${activeLinkTab === 'quick' ? 'bg-brand-indigo/10 text-brand-indigo border border-royal/20' : 'text-slate-500 hover:text-brand-indigo'}`}
-              >
-                Quick Handles
-              </button>
-              <button
-                type="button"
-                onClick={() => { setActiveLinkTab('secure'); setError(''); }}
-                className={`px-3 py-1 rounded-lg text-xs font-bold transition ${activeLinkTab === 'secure' ? 'bg-brand-indigo/10 text-slate-100 border border-brand-indigo/20' : 'text-slate-500 hover:text-brand-indigo'}`}
-              >
-                Simulated Password Auth
-              </button>
-            </div>
           </div>
 
           {error && <div className="p-3 bg-red-900/30 border border-red-500/40 rounded-xl text-red-300 text-sm">{error}</div>}
-
-          {activeLinkTab === 'quick' ? (
             <form onSubmit={handleEditSubmit} className="space-y-4">
               <div className="space-y-4">
                 <p className="text-xs font-bold text-brand-indigo uppercase tracking-wider border-b border-slate-800/80 pb-2">Personal Details</p>
@@ -437,6 +554,91 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                       type="text" 
                       value={editCollege} 
                       onChange={(e) => setEditCollege(e.target.value)}
+                      className="w-full bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-royal/20"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Email Address</label>
+                    <input 
+                      type="email" 
+                      value={editEmail} 
+                      onChange={(e) => setEditEmail(e.target.value)}
+                      className="w-full bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-royal/20"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Phone Number</label>
+                    <div className="flex gap-2">
+                      <select
+                        value={editCountryCode}
+                        onChange={(e) => setEditCountryCode(e.target.value)}
+                        className="w-1/3 bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-royal/20 appearance-none"
+                      >
+                        <option value="+91">+91 (India)</option>
+                        <option value="+1">+1 (USA/CAN)</option>
+                        <option value="+44">+44 (UK)</option>
+                        <option value="+61">+61 (AUS)</option>
+                        <option value="+86">+86 (CN)</option>
+                        <option value="+81">+81 (JP)</option>
+                      </select>
+                      <input 
+                        type="tel" 
+                        value={editPhone} 
+                        onChange={(e) => setEditPhone(e.target.value)}
+                        className="w-2/3 bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-royal/20"
+                        placeholder="Enter phone number"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Branch</label>
+                    <select 
+                      value={editBranch && !["", "Computer Science Engineering", "Information Technology", "AI/ML", "Electronics and Communication Engineering", "Electrical Engineering", "Mechanical Engineering", "Chemical Engineering", "Civil Engineering"].includes(editBranch) ? "Other" : editBranch}
+                      onChange={(e) => setEditBranch(e.target.value === "Other" ? "Other" : e.target.value)}
+                      className="w-full bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-royal/20 appearance-none"
+                    >
+                      <option value="" disabled>Select Branch</option>
+                      <option value="Computer Science Engineering">Computer Science Engineering</option>
+                      <option value="Information Technology">Information Technology</option>
+                      <option value="AI/ML">AI/ML</option>
+                      <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
+                      <option value="Electrical Engineering">Electrical Engineering</option>
+                      <option value="Mechanical Engineering">Mechanical Engineering</option>
+                      <option value="Chemical Engineering">Chemical Engineering</option>
+                      <option value="Civil Engineering">Civil Engineering</option>
+                      <option value="Other">Other (Please specify)</option>
+                    </select>
+                    {editBranch === "Other" || (editBranch && !["", "Computer Science Engineering", "Information Technology", "AI/ML", "Electronics and Communication Engineering", "Electrical Engineering", "Mechanical Engineering", "Chemical Engineering", "Civil Engineering"].includes(editBranch)) ? (
+                      <input 
+                        type="text" 
+                        value={editBranch === "Other" ? "" : editBranch} 
+                        onChange={(e) => setEditBranch(e.target.value)}
+                        placeholder="Type your branch here"
+                        className="w-full mt-2 bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-royal/20"
+                      />
+                    ) : null}
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Graduation Year</label>
+                    <select 
+                      value={editGraduationYear} 
+                      onChange={(e) => setEditGraduationYear(e.target.value)}
+                      className="w-full bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-royal/20 appearance-none"
+                    >
+                      <option value="" disabled>Select Year</option>
+                      {Array.from({length: 6}, (_, i) => new Date().getFullYear() + i).map(year => (
+                        <option key={year} value={year}>{year}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">CGPA</label>
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      value={editCgpa} 
+                      onChange={(e) => setEditCgpa(e.target.value)}
+                      placeholder="0.00"
                       className="w-full bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-royal/20"
                     />
                   </div>
@@ -493,70 +695,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                 </button>
               </div>
             </form>
-          ) : (
-            <form onSubmit={handleSecureSubmit} className="space-y-4">
-              {isAuthing ? (
-                <div className="py-8 text-center space-y-4">
-                  <div className="w-8 h-8 rounded-full border-4 border-brand-indigo/20 border-t-transparent animate-spin mx-auto"></div>
-                  <p className="text-sm text-slate-400 font-semibold animate-pulse">{authStep}</p>
-                </div>
-              ) : (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-500">Target Platform</label>
-                      <select
-                        value={securePlatform}
-                        onChange={(e) => setSecurePlatform(e.target.value)}
-                        className="w-full bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-brand-indigo/20"
-                      >
-                        <option value="Codeforces">Codeforces</option>
-                        <option value="CodeChef">CodeChef</option>
-                        <option value="LeetCode">LeetCode</option>
-                      </select>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-500">Platform Username/Handle</label>
-                      <input 
-                        type="text" 
-                        value={secureHandle} 
-                        onChange={(e) => setSecureHandle(e.target.value)}
-                        placeholder="Enter platform handle"
-                        autoComplete="off"
-                        className="w-full bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-brand-indigo/20"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-500">Platform Password</label>
-                      <input 
-                        type="password" 
-                        value={securePassword} 
-                        onChange={(e) => setSecurePassword(e.target.value)}
-                        placeholder="••••••••"
-                        autoComplete="new-password"
-                        className="w-full bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-brand-indigo/20"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex justify-end gap-3 pt-2 border-t border-slate-800/80">
-                    <button 
-                      type="button" 
-                      onClick={() => setShowEditHandles(false)}
-                      className="px-4 py-2 border border-slate-800/80 rounded-lg text-slate-500 text-sm hover:bg-[#110e1b] transition"
-                    >
-                      Cancel
-                    </button>
-                    <button 
-                      type="submit" 
-                      className="px-4 py-2 bg-brand-indigo text-white rounded-lg text-slate-100 text-sm font-semibold transition hover:opacity-95"
-                    >
-                      Authenticate & Link
-                    </button>
-                  </div>
-                </>
-              )}
-            </form>
-          )}
+
         </div>
       )}
 
@@ -660,8 +799,6 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
               <p className="font-bold mb-2">Steps to Link Your Profiles:</p>
               <ol className="list-decimal pl-5 space-y-1">
                 <li>Click on <strong>Edit Profile</strong>.</li>
-                <li>Click on <strong>Simulated Password Auth</strong>.</li>
-                <li>Complete the authentication process.</li>
                 <li>Add your respective platform IDs and save the changes.</li>
               </ol>
             </div>
@@ -669,13 +806,15 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
             <div className="border-t border-slate-200 dark:border-slate-800/80 pt-4">
               <h3 className="text-lg font-bold text-brand-indigo mb-2">Features of the Platform</h3>
               <ul className="list-disc pl-5 space-y-2">
-                <li>Track your coding performance across multiple platforms.</li>
-                <li>Daily <strong>Problem of the Day (POTD)</strong> with direct links to LeetCode and GFG.</li>
-                <li>Solve problems <strong>topic-wise</strong> as well as <strong>rating-wise</strong>.</li>
-                <li>Add and manage your personal tasks.</li>
-                <li>Join the <strong>Leaderboard</strong> and compete with your friends.</li>
-                <li>Get timely updates about upcoming coding contests.</li>
-                <li>Access an <strong>AI Coach</strong> for guidance, recommendations, and improvement strategies.</li>
+                <li>Track your coding performance across multiple platforms in one place.</li>
+                <li>Access the Daily <strong>Problem of the Day (POTD)</strong> with direct links to LeetCode and GeeksforGeeks.</li>
+                <li>Practice problems <strong>topic-wise</strong> as well as <strong>rating-wise</strong> to strengthen your problem-solving skills.</li>
+                <li>Learn Data Structures and Algorithms through curated content, including access to the popular <strong>Striver's DSA Course</strong>.</li>
+                <li>Add, organize, and manage your personal tasks efficiently.</li>
+                <li>Join the <strong>Leaderboard</strong> and compete with coders using this platform.</li>
+                <li>Get timely updates and reminders about upcoming coding contests.</li>
+                <li>Participate in <strong>virtual contests</strong> by selecting your preferred rating range and number of questions.</li>
+                <li>Stay motivated with daily coding insights and achievement tracking.</li>
               </ul>
             </div>
             

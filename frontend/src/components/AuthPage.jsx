@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useState } from 'react';
-import { Shield, Activity, KeyRound, UserPlus, LogIn, AlertCircle, User, MapPin, GraduationCap } from 'lucide-react';
+import { Shield, Activity, KeyRound, UserPlus, LogIn, AlertCircle, User, MapPin, GraduationCap, Mail } from 'lucide-react';
 import axios from 'axios';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
@@ -8,10 +8,16 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/a
 export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, isCancelable, onCancel }) {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [location, setLocation] = useState('');
   const [college, setCollege] = useState('');
+  const [branch, setBranch] = useState('');
+  const [graduationYear, setGraduationYear] = useState('');
+  const [cgpa, setCgpa] = useState('');
+  const [countryCode, setCountryCode] = useState('+91');
+  const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -48,10 +54,15 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
         ? { username: username.trim(), password: password.trim() }
         : { 
             username: username.trim(), 
+            email: email.trim(),
             password: password.trim(),
             fullName: fullName.trim(),
             location: location.trim(),
-            college: college.trim()
+            college: college.trim(),
+            branch: branch.trim(),
+            graduationYear: graduationYear.toString().trim(),
+            cgpa: cgpa.toString().trim(),
+            phone: phone.trim() ? `${countryCode} ${phone.trim()}` : ''
           };
 
       const res = await axios.post(`${BACKEND_URL}/users/${endpoint}`, payload);
@@ -86,7 +97,7 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
         {/* Connection Error Banner */}
         {connError && (
           <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex flex-col gap-2 text-amber-300 text-xs font-semibold">
-            <p className="flex items-center gap-1.5"><AlertCircle className="w-4 h-4" /> Local Backend Express Server Offline</p>
+            <p className="flex items-center gap-1.5"><AlertCircle className="w-4 h-4" /> Backend API Server Offline</p>
             <button 
               onClick={onRetryConnection}
               className="py-1 bg-amber-500 text-blue-950 font-bold rounded-lg hover:opacity-90 transition"
@@ -124,7 +135,7 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1">
-              <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Username</label>
+              <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{isLogin ? 'Username or Email' : 'Username'}</label>
               <input
                 type="text"
                 value={username}
@@ -151,7 +162,44 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
             {/* Profile fields on Signup */}
             {!isLogin && (
               <div className="space-y-3 pt-3 border-t border-slate-800/80">
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Profile Information</p>
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Email Address</label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="e.g. hello@example.com"
+                      className="w-full bg-[#110e1b] border border-slate-800 px-4 pl-10 py-2.5 rounded-xl text-slate-100 outline-none focus:border-royal/20 text-xs"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1 mt-3">
+                  <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Phone Number</label>
+                  <div className="flex gap-2">
+                    <select
+                      value={countryCode}
+                      onChange={(e) => setCountryCode(e.target.value)}
+                      className="w-1/3 bg-[#110e1b] border border-slate-800 px-3 py-2.5 rounded-xl text-slate-100 outline-none focus:border-royal/20 text-xs appearance-none"
+                    >
+                      <option value="+91">+91 (India)</option>
+                      <option value="+1">+1 (USA/CAN)</option>
+                      <option value="+44">+44 (UK)</option>
+                      <option value="+61">+61 (AUS)</option>
+                      <option value="+86">+86 (CN)</option>
+                      <option value="+81">+81 (JP)</option>
+                    </select>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="e.g. 9876543210"
+                      className="w-2/3 bg-[#110e1b] border border-slate-800 px-4 py-2.5 rounded-xl text-slate-100 outline-none focus:border-royal/20 text-xs"
+                    />
+                  </div>
+                </div>
+                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mt-3">Profile Information</p>
                 <div className="grid grid-cols-1 gap-3">
                   <div className="relative">
                     <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
@@ -182,6 +230,61 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
                       placeholder="College / Organization"
                       className="w-full bg-[#110e1b] border border-slate-800 px-4 pl-10 py-2.5 rounded-xl text-slate-100 outline-none focus:border-royal/20 text-xs"
                     />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                    <div className="relative col-span-1 sm:col-span-2">
+                      <select
+                        value={branch && !["", "Computer Science Engineering", "Information Technology", "AI/ML", "Electronics and Communication Engineering", "Electrical Engineering", "Mechanical Engineering", "Chemical Engineering", "Civil Engineering"].includes(branch) ? "Other" : branch}
+                        onChange={(e) => setBranch(e.target.value === "Other" ? "Other" : e.target.value)}
+                        className="w-full bg-[#110e1b] border border-slate-800 px-4 py-2.5 rounded-xl text-slate-100 outline-none focus:border-royal/20 text-xs appearance-none"
+                      >
+                        <option value="" disabled>Select Branch</option>
+                        <option value="Computer Science Engineering">Computer Science Engineering</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="AI/ML">AI/ML</option>
+                        <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
+                        <option value="Electrical Engineering">Electrical Engineering</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Chemical Engineering">Chemical Engineering</option>
+                        <option value="Civil Engineering">Civil Engineering</option>
+                        <option value="Other">Other (Please specify)</option>
+                      </select>
+                    </div>
+                    {branch === "Other" || (branch && !["", "Computer Science Engineering", "Information Technology", "AI/ML", "Electronics and Communication Engineering", "Electrical Engineering", "Mechanical Engineering", "Chemical Engineering", "Civil Engineering"].includes(branch)) ? (
+                      <div className="relative col-span-1 sm:col-span-2">
+                        <input
+                          type="text"
+                          value={branch === "Other" ? "" : branch}
+                          onChange={(e) => setBranch(e.target.value)}
+                          placeholder="Type your branch here"
+                          className="w-full bg-[#110e1b] border border-slate-800 px-4 py-2.5 rounded-xl text-slate-100 outline-none focus:border-royal/20 text-xs"
+                        />
+                      </div>
+                    ) : null}
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                    <div className="relative">
+                      <select
+                        value={graduationYear}
+                        onChange={(e) => setGraduationYear(e.target.value)}
+                        className="w-full bg-[#110e1b] border border-slate-800 px-4 py-2.5 rounded-xl text-slate-100 outline-none focus:border-royal/20 text-xs appearance-none"
+                      >
+                        <option value="" disabled>Grad Year</option>
+                        {Array.from({length: 6}, (_, i) => new Date().getFullYear() + i).map(year => (
+                          <option key={year} value={year}>{year}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={cgpa}
+                        onChange={(e) => setCgpa(e.target.value)}
+                        placeholder="CGPA"
+                        className="w-full bg-[#110e1b] border border-slate-800 px-4 py-2.5 rounded-xl text-slate-100 outline-none focus:border-royal/20 text-xs"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

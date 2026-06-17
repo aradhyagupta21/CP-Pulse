@@ -216,33 +216,8 @@ export default function Analytics({ stats }) {
             )}
           </div>
 
-          {/* Radar and Pie Split Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Topic Radar Breakdown */}
-            <div className="bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl border border-slate-800/80">
-              <div className="flex items-center gap-2 mb-6">
-                <Compass className="w-5 h-5 text-brand-indigo" />
-                <h2 className="text-xl font-bold text-slate-100">Topic-wise Solved Distribution</h2>
-              </div>
-              
-              <div className="h-72 w-full flex justify-center">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
-                    <PolarGrid stroke="rgba(255, 255, 255, 0.08)" />
-                    <PolarAngleAxis dataKey="subject" stroke="#94a3b8" fontSize={11} />
-                    <PolarRadiusAxis angle={30} domain={[0, 'auto']} stroke="rgba(255, 255, 255, 0.2)" fontSize={9} />
-                    <Radar 
-                      name="Solved" 
-                      dataKey="count" 
-                      stroke="#00f2fe" 
-                      fill="#4facfe" 
-                      fillOpacity={0.15} 
-                    />
-                    <Tooltip />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+          {/* Difficulty Pie Split */}
+          <div className="grid grid-cols-1 max-w-2xl mx-auto w-full gap-8">
 
             {/* Difficulty Pie split */}
             <div className="bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl border border-slate-800/80">

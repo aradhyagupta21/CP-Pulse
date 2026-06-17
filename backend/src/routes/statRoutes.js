@@ -32,7 +32,7 @@ router.post('/:userId/sync', async (req, res) => {
       syncPromises.push(
         apiService.fetchCodeforces(user.codeforcesHandle).then(data => {
           if (data) return dbHelper.upsertStatistics(userId, 'Codeforces', data);
-        })
+        }).catch(err => console.error(`CF Sync Failed: ${err.message}`))
       );
     }
 
@@ -41,7 +41,7 @@ router.post('/:userId/sync', async (req, res) => {
       syncPromises.push(
         apiService.fetchLeetCode(user.leetcodeHandle).then(data => {
           if (data) return dbHelper.upsertStatistics(userId, 'LeetCode', data);
-        })
+        }).catch(err => console.error(`LC Sync Failed: ${err.message}`))
       );
     }
 
@@ -50,7 +50,7 @@ router.post('/:userId/sync', async (req, res) => {
       syncPromises.push(
         apiService.fetchCodeChef(user.codechefHandle).then(data => {
           if (data) return dbHelper.upsertStatistics(userId, 'CodeChef', data);
-        })
+        }).catch(err => console.error(`CC Sync Failed: ${err.message}`))
       );
     }
 

@@ -30,8 +30,9 @@ export default function ContestTracker({ stats, currentUser }) {
   const [allUpcoming, setAllUpcoming] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('synced');
+  const [selectedFilter, setSelectedFilter] = useState('all');
   const [refreshKey, setRefreshKey] = useState(0);
+  const [currentTime, setCurrentTime] = useState(Date.now());
 
   // Detect which platforms the current user has linked
   const linkedPlatforms = [];
@@ -85,21 +86,20 @@ export default function ContestTracker({ stats, currentUser }) {
     fetchContests();
   }, [fetchContests]);
 
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   // Apply platform and time filter
   const getFilteredContests = () => {
     const limit15DaysMs = 15 * 24 * 60 * 60 * 1000;
-    const now = Date.now();
+    const now = currentTime;
 
     // 1. Apply platform filter
     let result = allUpcoming;
     if (selectedFilter !== 'all') {
-      if (selectedFilter === 'synced') {
-        if (linkedPlatforms.length > 0) {
-          result = allUpcoming.filter(c => linkedPlatforms.includes(c.platform));
-        }
-      } else {
-        result = allUpcoming.filter(c => c.platform === selectedFilter);
-      }
+      result = allUpcoming.filter(c => c.platform === selectedFilter);
     }
 
     // 2. Filter up to future 15 days
@@ -119,14 +119,16 @@ export default function ContestTracker({ stats, currentUser }) {
   };
 
   const getTimeUntil = (date) => {
-    const diff = date - Date.now();
+    const diff = date - currentTime;
     if (diff <= 0) return 'Starting now';
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    if (days > 0) return `in ${days}d ${hours}h`;
-    if (hours > 0) return `in ${hours}h ${mins}m`;
-    return `in ${mins}m`;
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+    if (days > 0) return `in ${days}d ${hours}h ${mins}m ${secs}s`;
+    if (hours > 0) return `in ${hours}h ${mins}m ${secs}s`;
+    if (mins > 0) return `in ${mins}m ${secs}s`;
+    return `in ${secs}s`;
   };
 
   // Compile full contest history across stats
@@ -146,12 +148,7 @@ export default function ContestTracker({ stats, currentUser }) {
   // Removed Predictor logic
 
   const filterTabs = [
-    {
-      id: 'synced',
-      label: `My Syncs${linkedPlatforms.length > 0 ? ` (${linkedPlatforms.length})` : ''}`,
-      activeClass: 'bg-brand-indigo text-white text-slate-100 shadow-md shadow-brand-indigo/10'
-    },
-    { id: 'all', label: 'All Platforms', activeClass: 'bg-slate-600 text-slate-100' },
+    { id: 'all', label: 'All Platforms', activeClass: 'bg-yellow-400 text-slate-900' },
     { id: 'Codeforces', label: 'Codeforces', activeClass: 'bg-brand-indigo text-slate-100' },
     { id: 'CodeChef', label: 'CodeChef', activeClass: 'bg-brand-purple text-slate-100' },
     { id: 'LeetCode', label: 'LeetCode', activeClass: 'bg-brand-cyan text-slate-900' }
@@ -164,7 +161,6 @@ export default function ContestTracker({ stats, currentUser }) {
         <h1 className="text-4xl font-extrabold tracking-tight text-slate-100 ">
           Contests
         </h1>
-        <p className="text-slate-500 mt-1">Live schedules synced from Codeforces, CodeChef & LeetCode.</p>
       </div>
 
 
@@ -204,12 +200,7 @@ export default function ContestTracker({ stats, currentUser }) {
           ))}
         </div>
 
-        {/* Notice when no handles linked */}
-        {selectedFilter === 'synced' && linkedPlatforms.length === 0 && (
-          <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-300 text-xs font-medium">
-            No platform handles linked yet. Showing all platforms. Head to <strong>Dashboard → Configure Handles</strong> to link your profiles.
-          </div>
-        )}
+
 
         {err && (
           <div className="p-3 bg-red-900/20 border border-red-500/30 rounded-xl text-red-300 text-xs font-medium">

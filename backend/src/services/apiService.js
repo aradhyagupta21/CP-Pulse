@@ -1,72 +1,6 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
-// Fallback Mock Data Generator in case APIs rate-limit or fail
-const generateMockStats = (platform, handle) => {
-  const seed = handle.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const currentRating = 1000 + (seed % 1000);
-  const maxRating = currentRating + (seed % 200);
-  const solvedCount = 100 + (seed % 500);
-
-  const solvedByTopic = {
-    'Arrays': 20 + (seed % 50),
-    'Graphs': 5 + (seed % 20),
-    'DP': 8 + (seed % 25),
-    'Trees': 6 + (seed % 15),
-    'Greedy': 15 + (seed % 35),
-    'Binary Search': 10 + (seed % 30),
-    'Math': 25 + (seed % 60),
-    'Strings': 12 + (seed % 40)
-  };
-
-  const difficultyDistribution = {
-    'Easy': Math.round(solvedCount * 0.5),
-    'Medium': Math.round(solvedCount * 0.38),
-    'Hard': Math.round(solvedCount * 0.12)
-  };
-
-  // Generate mock rating history
-  const ratingHistory = [];
-  let ratingTemp = currentRating - 200;
-  for (let i = 0; i < 6; i++) {
-    const change = -30 + (seed * (i + 1)) % 100;
-    ratingTemp += change;
-    ratingHistory.push({
-      contestName: `${platform} Round #${100 + i}`,
-      rating: ratingTemp,
-      rank: 500 + (seed % 1000) - i * 50,
-      date: new Date(Date.now() - (6 - i) * 15 * 24 * 60 * 60 * 1000),
-      ratingChange: change
-    });
-  }
-
-  // Generate mock submissions
-  const recentSubmissions = [];
-  const topics = ['Arrays', 'DP', 'Graphs', 'Greedy', 'Trees'];
-  for (let i = 0; i < 5; i++) {
-    recentSubmissions.push({
-      problemName: `${platform} Problem ${String.fromCharCode(65 + i)}`,
-      problemUrl: '#',
-      verdict: 'OK',
-      submittedAt: new Date(Date.now() - i * 1.5 * 24 * 60 * 60 * 1000),
-      difficulty: i % 3 === 0 ? 'Easy' : (i % 3 === 1 ? 'Medium' : 'Hard'),
-      tags: [topics[i % topics.length]]
-    });
-  }
-
-  return {
-    platform,
-    currentRating,
-    maxRating,
-    contestsCount: ratingHistory.length,
-    solvedCount,
-    solvedByTopic,
-    difficultyDistribution,
-    ratingHistory,
-    recentSubmissions
-  };
-};
-
 export const apiService = {
   // Fetch Codeforces profile
   async fetchCodeforces(handle) {
@@ -191,7 +125,7 @@ export const apiService = {
       };
     } catch (error) {
       console.warn(`Codeforces API fetch error for user ${handle}: ${error.message}. Returning mock/interpolated stats.`);
-      return generateMockStats('Codeforces', handle);
+      throw error;
     }
   },
 
@@ -199,6 +133,8 @@ export const apiService = {
   async fetchLeetCode(handle) {
     if (!handle) return null;
     try {
+      const seed = handle.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const topics = ['Arrays', 'DP', 'Graphs', 'Greedy', 'Trees'];
       const graphqlUrl = 'https://leetcode.com/graphql';
       const query = `
         query userProblemsSolved($username: String!) {
@@ -213,6 +149,11 @@ export const apiService = {
                 count
                 submissions
               }
+            }
+            tagProblemCounts {
+              advanced { tagName problemsSolved }
+              intermediate { tagName problemsSolved }
+              fundamental { tagName problemsSolved }
             }
             submissionCalendar
           }
@@ -273,18 +214,27 @@ export const apiService = {
         console.warn('Failed to parse LC submission calendar');
       }
 
-      const seed = handle.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      const topics = ['Arrays', 'DP', 'Graphs', 'Greedy', 'Trees'];
-      const solvedByTopic = {
-        'Arrays': Math.round(solvedCount * 0.35),
-        'Graphs': Math.round(solvedCount * 0.08),
-        'DP': Math.round(solvedCount * 0.12),
-        'Trees': Math.round(solvedCount * 0.10),
-        'Greedy': Math.round(solvedCount * 0.10),
-        'Binary Search': Math.round(solvedCount * 0.15),
-        'Math': Math.round(solvedCount * 0.05),
-        'Strings': Math.round(solvedCount * 0.05)
-      };
+      const tagCounts = matchedUser.tagProblemCounts || {};
+      const allTags = [
+        ...(tagCounts.advanced || []),
+        ...(tagCounts.intermediate || []),
+        ...(tagCounts.fundamental || [])
+      ];
+
+      const solvedByTopic = {};
+      allTags.forEach(tag => {
+        let standardTag = tag.tagName;
+        if (standardTag === 'Dynamic Programming') standardTag = 'DP';
+        else if (standardTag === 'Array') standardTag = 'Arrays';
+        else if (standardTag === 'String') standardTag = 'Strings';
+        else if (standardTag === 'Tree') standardTag = 'Trees';
+        else if (standardTag === 'Graph' || standardTag === 'Depth-First Search' || standardTag === 'Breadth-First Search') standardTag = 'Graphs';
+
+        const commonTags = ['Arrays', 'Graphs', 'DP', 'Trees', 'Greedy', 'Binary Search', 'Math', 'Strings'];
+        if (commonTags.includes(standardTag)) {
+          solvedByTopic[standardTag] = (solvedByTopic[standardTag] || 0) + tag.problemsSolved;
+        }
+      });
 
       // Format recent submissions from calendar timestamps for streak calculation
       const timestamps = Object.keys(submissionCalendar).sort((a, b) => b - a);
@@ -429,7 +379,7 @@ export const apiService = {
 
       } catch (fallbackError) {
         console.warn(`LeetCode unofficial API fallback failed for user ${handle}: ${fallbackError.message}. Returning mock/interpolated stats.`);
-        return generateMockStats('LeetCode', handle);
+        throw fallbackError;
       }
     }
   },
@@ -533,40 +483,12 @@ export const apiService = {
         }
       }
 
-      // Fallback to seed-based mock history if parsing failed or returned empty
+      // Fallback to empty history if parsing failed or returned empty
       if (ratingHistory.length === 0) {
-        let tempRating = currentRating - 150;
-        for (let i = 0; i < 4; i++) {
-          const change = -10 + (seed * (i + 1)) % 80;
-          tempRating += change;
-          ratingHistory.push({
-            contestName: `CodeChef Starters ${60 + i}`,
-            rating: tempRating,
-            rank: 1000 + (seed % 2000) - i * 200,
-            date: new Date(Date.now() - (4 - i) * 14 * 24 * 60 * 60 * 1000),
-            ratingChange: change
-          });
-        }
+        console.warn(`No rating history found for CodeChef handle ${handle}`);
       }
 
-      const recentSubmissions = [
-        {
-          problemName: 'Chef and Dynamic Programming',
-          problemUrl: 'https://www.codechef.com/',
-          verdict: 'OK',
-          submittedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-          difficulty: 'Medium',
-          tags: ['DP']
-        },
-        {
-          problemName: 'Array Queries',
-          problemUrl: 'https://www.codechef.com/',
-          verdict: 'OK',
-          submittedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
-          difficulty: 'Easy',
-          tags: ['Arrays']
-        }
-      ];
+      const recentSubmissions = [];
 
       return {
         platform: 'CodeChef',
@@ -628,7 +550,7 @@ export const apiService = {
       }
       
       console.warn(`Returning CodeChef mock data for handle ${handle}`);
-      return generateMockStats('CodeChef', handle);
+      throw e;
     }
   }
 };

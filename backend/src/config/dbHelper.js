@@ -75,6 +75,23 @@ export const dbHelper = {
     }
   },
 
+  async getUserByIdentifier(identifier) {
+    if (checkMongoConnection()) {
+      return await User.findOne({
+        $or: [
+          { username: new RegExp(`^${identifier}$`, 'i') },
+          { email: new RegExp(`^${identifier}$`, 'i') }
+        ]
+      });
+    } else {
+      const users = readJSON(USERS_FILE);
+      return users.find(u => 
+        u.username.toLowerCase() === identifier.toLowerCase() || 
+        (u.email && u.email.toLowerCase() === identifier.toLowerCase())
+      ) || null;
+    }
+  },
+
   async createUser(userData) {
     if (checkMongoConnection()) {
       const newUser = new User(userData);
@@ -88,10 +105,15 @@ export const dbHelper = {
       const newUser = {
         _id: 'u_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
         username: userData.username,
+        email: userData.email || '',
+        phone: userData.phone || '',
         password: userData.password,
         fullName: userData.fullName || '',
         location: userData.location || '',
         college: userData.college || '',
+        branch: userData.branch || '',
+        graduationYear: userData.graduationYear || '',
+        cgpa: userData.cgpa || '',
         codeforcesHandle: userData.codeforcesHandle || '',
         codechefHandle: userData.codechefHandle || '',
         leetcodeHandle: userData.leetcodeHandle || '',

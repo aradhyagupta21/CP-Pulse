@@ -35,7 +35,7 @@ router.get('/:username', async (req, res) => {
 // Create/Signup user
 router.post('/signup', async (req, res) => {
   try {
-    const { username, password, fullName, location, college, codeforcesHandle, codechefHandle, leetcodeHandle } = req.body;
+    const { username, email, password, fullName, location, college, branch, graduationYear, cgpa, codeforcesHandle, codechefHandle, leetcodeHandle } = req.body;
     if (!username || !password || !fullName || !location || !college) {
       return res.status(400).json({ error: 'Username, password, full name, location, and college are required.' });
     }
@@ -47,10 +47,14 @@ router.post('/signup', async (req, res) => {
 
     const newUser = await dbHelper.createUser({
       username,
+      email: email || '',
       password: hashPassword(password),
       fullName,
       location,
       college,
+      branch: branch || '',
+      graduationYear: graduationYear || '',
+      cgpa: cgpa || '',
       codeforcesHandle: codeforcesHandle || '',
       codechefHandle: codechefHandle || '',
       leetcodeHandle: leetcodeHandle || '',
@@ -100,12 +104,12 @@ router.post('/register', async (req, res) => {
 // Login user
 router.post('/login', async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password } = req.body; // 'username' here acts as the identifier (username or email)
     if (!username || !password) {
-      return res.status(400).json({ error: 'Username and password are required.' });
+      return res.status(400).json({ error: 'Username/Email and password are required.' });
     }
 
-    const user = await dbHelper.getUserByUsername(username);
+    const user = await dbHelper.getUserByIdentifier(username);
     if (!user) {
       return res.status(401).json({ error: 'Invalid username or password.' });
     }
@@ -158,7 +162,7 @@ router.put('/:username/password', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { username, fullName, location, college, codeforcesHandle, codechefHandle, leetcodeHandle } = req.body;
+    const { username, email, phone, fullName, location, college, branch, graduationYear, cgpa, codeforcesHandle, codechefHandle, leetcodeHandle } = req.body;
     
     // Validate username uniqueness if it's being updated
     if (username !== undefined) {
@@ -169,6 +173,8 @@ router.put('/:id', async (req, res) => {
     }
 
     const updateData = {};
+    if (email !== undefined) updateData.email = email;
+    if (phone !== undefined) updateData.phone = phone;
     if (codeforcesHandle !== undefined) updateData.codeforcesHandle = codeforcesHandle;
     if (codechefHandle !== undefined) updateData.codechefHandle = codechefHandle;
     if (leetcodeHandle !== undefined) updateData.leetcodeHandle = leetcodeHandle;
@@ -176,6 +182,9 @@ router.put('/:id', async (req, res) => {
     if (fullName !== undefined) updateData.fullName = fullName;
     if (location !== undefined) updateData.location = location;
     if (college !== undefined) updateData.college = college;
+    if (branch !== undefined) updateData.branch = branch;
+    if (graduationYear !== undefined) updateData.graduationYear = graduationYear;
+    if (cgpa !== undefined) updateData.cgpa = cgpa;
 
     const updated = await dbHelper.updateUser(id, updateData);
 
