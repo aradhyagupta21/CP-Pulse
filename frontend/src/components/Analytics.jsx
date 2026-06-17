@@ -231,8 +231,8 @@ export default function Analytics({ stats }) {
                   No difficulty data solved on this platform.
                 </div>
               ) : (
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-6 h-72">
-                  <div className="h-56 w-56">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:h-72 py-4">
+                  <div className="h-56 w-56 shrink-0">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie

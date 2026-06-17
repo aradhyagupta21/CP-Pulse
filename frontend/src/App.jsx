@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { LayoutDashboard, BarChart3, CalendarRange, Target, Flame, Users, Sparkles, Terminal, LogOut, ChevronRight, Sun, Moon, BookOpen, Shield, Activity, Layers, CheckCircle, Trash2, Menu, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { LayoutDashboard, BarChart3, CalendarRange, Target, Flame, Users, Terminal, LogOut, ChevronRight, BookOpen, Shield, Activity, Layers, CheckCircle, Trash2, Menu, X } from 'lucide-react';
 import axios from 'axios';
 import Dashboard from './components/Dashboard';
 import AuthPage from './components/AuthPage';
@@ -59,6 +59,7 @@ export default function App() {
     if (cachedAccountsStr) {
       try {
         const parsedAccounts = JSON.parse(cachedAccountsStr);
+        // eslint-disable-next-line
         setAccounts(parsedAccounts);
         
         if (parsedAccounts.length > 0) {
@@ -90,8 +91,8 @@ export default function App() {
             }
           });
         }
-      } catch (e) {
-        console.warn('Failed to parse cached accounts.');
+      } catch (err) {
+        console.warn('Failed to parse cached accounts.', err);
       }
     } else {
       // Migrate from old single-user schema if it exists
@@ -104,49 +105,10 @@ export default function App() {
           localStorage.setItem('cp_tracker_accounts', JSON.stringify([parsed]));
           localStorage.setItem('cp_tracker_active_id', parsed._id);
           localStorage.removeItem('cp_tracker_user');
-        } catch (e) {}
+        } catch (err) { console.warn(err); }
       }
     }
     fetchUsers();
-  }, []);
-
-  useEffect(() => {
-    // Disable right click
-    const handleContextMenu = (e) => {
-      e.preventDefault();
-    };
-
-    // Disable dev tools keyboard shortcuts
-    const handleKeyDown = (e) => {
-      // F12
-      if (e.keyCode === 123) {
-        e.preventDefault();
-      }
-      // Ctrl+Shift+I
-      if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
-        e.preventDefault();
-      }
-      // Ctrl+Shift+J
-      if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
-        e.preventDefault();
-      }
-      // Ctrl+U (View Source)
-      if (e.ctrlKey && e.keyCode === 85) {
-        e.preventDefault();
-      }
-      // Ctrl+Shift+C (Inspect Element)
-      if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
-        e.preventDefault();
-      }
-    };
-
-    document.addEventListener('contextmenu', handleContextMenu);
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('contextmenu', handleContextMenu);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
   }, []);
 
   const handleDeleteAccount = async () => {
@@ -233,19 +195,6 @@ export default function App() {
       setCurrentUser(selected);
       localStorage.setItem('cp_tracker_active_id', selected._id);
     }
-  };
-
-  const handleUserRegister = (newUser) => {
-    // Legacy support, update state and switch to it
-    const exists = accounts.find(acc => acc._id === newUser._id);
-    let updatedAccounts = [...accounts];
-    if (!exists) {
-      updatedAccounts.push(newUser);
-    }
-    setAccounts(updatedAccounts);
-    localStorage.setItem('cp_tracker_accounts', JSON.stringify(updatedAccounts));
-    localStorage.setItem('cp_tracker_active_id', newUser._id);
-    setCurrentUser(newUser);
   };
 
   const handleUserUpdate = (updatedUser) => {

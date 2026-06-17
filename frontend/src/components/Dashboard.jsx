@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { RefreshCw, UserCheck, Flame, BookOpen, Award, Target, Plus, ShieldCheck, MapPin, GraduationCap, Edit, Key, HelpCircle, User } from 'lucide-react';
+import { RefreshCw, UserCheck, Flame, BookOpen, Award, Target, Plus, ShieldCheck, Edit, Key, HelpCircle, User, BarChart2, ChefHat, Code2 } from 'lucide-react';
 import axios from 'axios';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
@@ -36,13 +36,6 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
   const [editPhone, setEditPhone] = useState('');
   const [isSavingHandles, setIsSavingHandles] = useState(false);
 
-  // States for simulated secure authentication linking
-  const [activeLinkTab, setActiveLinkTab] = useState('quick'); // 'quick' or 'secure'
-  const [securePlatform, setSecurePlatform] = useState('Codeforces');
-  const [secureHandle, setSecureHandle] = useState('');
-  const [securePassword, setSecurePassword] = useState('');
-  const [isAuthing, setIsAuthing] = useState(false);
-  const [authStep, setAuthStep] = useState('');
   const [showGuidelinesModal, setShowGuidelinesModal] = useState(false);
 
   // Password Modal State
@@ -242,54 +235,6 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
     }
   };
 
-  const handleSecureSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    if (!secureHandle.trim() || !securePassword.trim()) {
-      setError('Username/Handle and Password are required for secure linkage.');
-      return;
-    }
-    
-    setIsAuthing(true);
-    setAuthStep(`Connecting to ${securePlatform} secure gateway...`);
-    
-    // Step 2
-    setTimeout(() => {
-      setAuthStep('Bypassing verification CAPTCHA cloud shield...');
-    }, 900);
-    
-    // Step 3
-    setTimeout(() => {
-      setAuthStep('Decrypting credentials & extracting platform authentication token...');
-    }, 1800);
-    
-    // Step 4: Finalize
-    setTimeout(async () => {
-      try {
-        const res = await axios.post(`${BACKEND_URL}/users/${currentUser._id}/credentials`, {
-          platform: securePlatform,
-          handle: secureHandle.trim(),
-          password: securePassword.trim()
-        });
-        onUserUpdate(res.data);
-        setIsAuthing(false);
-        setAuthStep('');
-        setShowEditHandles(false);
-        setSecureHandle('');
-        setSecurePassword('');
-        // Trigger sync
-        setTimeout(() => {
-          onSync();
-        }, 300);
-      } catch (err) {
-        setError(err.response?.data?.error || 'Simulated gateway handshake failed. Check your handles and credentials.');
-        setIsAuthing(false);
-        setAuthStep('');
-      }
-    }, 2800);
-  };
-
-
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -327,7 +272,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
         </div>
 
         {/* Action Icons Panel */}
-        <div className="flex items-center gap-3 relative">
+        <div className="fixed top-2.5 right-4 z-40 flex items-center gap-2 sm:relative sm:top-auto sm:right-auto sm:z-auto sm:gap-3">
           
           {currentUser && (
             <button
@@ -796,11 +741,9 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                 <li>LeetCode ID</li>
               </ul>
               
-              <p className="font-bold mb-2">Steps to Link Your Profiles:</p>
-              <ol className="list-decimal pl-5 space-y-1">
-                <li>Click on <strong>Edit Profile</strong>.</li>
-                <li>Add your respective platform IDs and save the changes.</li>
-              </ol>
+              <p className="mt-3 text-slate-300">
+                You can also switch to a different linked platform ID through the <strong>Edit Profile</strong> section.
+              </p>
             </div>
             
             <div className="border-t border-slate-200 dark:border-slate-800/80 pt-4">
@@ -927,8 +870,10 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
             <h2 className="text-2xl font-bold text-slate-100 mb-6">Linked Handles Breakdown</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Codeforces Panel */}
-              <div className="bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl border border-slate-800/80 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-brand-indigo/10 rounded-full blur-2xl"></div>
+              <div className="bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
+                  <BarChart2 className="w-24 h-24 text-brand-indigo" />
+                </div>
                 <div className="flex justify-between items-start">
                   <div>
                     <span className="px-2.5 py-1 text-xs font-bold bg-brand-indigo/10 border border-royal/20 text-brand-indigo rounded-full">
@@ -981,8 +926,10 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
               </div>
 
               {/* CodeChef Panel */}
-              <div className="bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl border border-slate-800/80 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-brand-indigo/10 rounded-full blur-2xl"></div>
+              <div className="bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
+                  <ChefHat className="w-24 h-24 text-slate-400" />
+                </div>
                 <div className="flex justify-between items-start">
                   <div>
                     <span className="px-2.5 py-1 text-xs font-bold bg-brand-indigo/10 border border-brand-indigo/20 text-slate-100 rounded-full">
@@ -1035,8 +982,10 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
               </div>
 
               {/* LeetCode Panel */}
-              <div className="bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl border border-slate-800/80 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-brand-indigo/10 rounded-full blur-2xl"></div>
+              <div className="bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
+                  <Code2 className="w-24 h-24 text-amber-500" />
+                </div>
                 <div className="flex justify-between items-start">
                   <div>
                     <span className="px-2.5 py-1 text-xs font-bold bg-brand-indigo/10 border border-royal/20 text-brand-indigo rounded-full">

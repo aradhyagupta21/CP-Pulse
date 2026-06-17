@@ -10,5 +10,38 @@
   <body class="bg-dark-950">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Disable right-click
+      document.addEventListener('contextmenu', event => event.preventDefault());
+
+      // Disable keyboard shortcuts for DevTools
+      document.addEventListener('keydown', function(e) {
+        if (e.keyCode === 123) { // F12
+          e.preventDefault();
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) { // Ctrl+Shift+I
+          e.preventDefault();
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 74) { // Ctrl+Shift+J
+          e.preventDefault();
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 67) { // Ctrl+Shift+C
+          e.preventDefault();
+        }
+        if (e.ctrlKey && e.keyCode === 85) { // Ctrl+U
+          e.preventDefault();
+        }
+      });
+
+      // Aggressive DevTools block
+      setInterval(function() {
+        const before = new Date().getTime();
+        debugger;
+        const after = new Date().getTime();
+        if (after - before > 100) {
+          document.body.innerHTML = "<div style='display:flex;justify-content:center;align-items:center;height:100vh;background:#0b1120;color:white;font-family:sans-serif;flex-direction:column;'><h2>Access Denied</h2><p>Developer Tools are disabled on this site.</p></div>";
+        }
+      }, 1000);
+    </script>
   </body>
 </html>

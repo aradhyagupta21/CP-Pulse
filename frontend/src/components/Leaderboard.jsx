@@ -22,11 +22,11 @@ export default function Leaderboard({ currentUser, leaderboard }) {
       <div>
         {/* Leaderboard Table */}
         <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
-              <Trophy className="w-6 h-6 text-amber-400" /> Active Standings
+          <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-1 sm:gap-0">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-100 flex items-center gap-2">
+              <Trophy className="w-6 h-6 text-amber-400 shrink-0" /> Active Standings
             </h2>
-            <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Sorted by average rating</span>
+            <span className="text-[10px] sm:text-xs text-slate-500 font-semibold uppercase tracking-wider pl-8 sm:pl-0">Sorted by average rating</span>
           </div>
 
           <div className="bg-[#110e1b] border border-slate-800/80 rounded-2xl border border-slate-800/80 overflow-hidden shadow-sm">

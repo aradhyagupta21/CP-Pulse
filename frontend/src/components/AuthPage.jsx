@@ -18,6 +18,9 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
   const [cgpa, setCgpa] = useState('');
   const [countryCode, setCountryCode] = useState('+91');
   const [phone, setPhone] = useState('');
+  const [codeforcesHandle, setCodeforcesHandle] = useState('');
+  const [codechefHandle, setCodechefHandle] = useState('');
+  const [leetcodeHandle, setLeetcodeHandle] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -62,7 +65,10 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
             branch: branch.trim(),
             graduationYear: graduationYear.toString().trim(),
             cgpa: cgpa.toString().trim(),
-            phone: phone.trim() ? `${countryCode} ${phone.trim()}` : ''
+            phone: phone.trim() ? `${countryCode} ${phone.trim()}` : '',
+            codeforcesHandle: codeforcesHandle.trim(),
+            codechefHandle: codechefHandle.trim(),
+            leetcodeHandle: leetcodeHandle.trim()
           };
 
       const res = await axios.post(`${BACKEND_URL}/users/${endpoint}`, payload);
@@ -285,6 +291,37 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
                         className="w-full bg-[#110e1b] border border-slate-800 px-4 py-2.5 rounded-xl text-slate-100 outline-none focus:border-royal/20 text-xs"
                       />
                     </div>
+                  </div>
+                </div>
+                
+                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mt-4">Platform Handles (Optional)</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={codeforcesHandle}
+                      onChange={(e) => setCodeforcesHandle(e.target.value)}
+                      placeholder="Codeforces Handle"
+                      className="w-full bg-[#110e1b] border border-slate-800 px-4 py-2.5 rounded-xl text-slate-100 outline-none focus:border-royal/20 text-xs"
+                    />
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={codechefHandle}
+                      onChange={(e) => setCodechefHandle(e.target.value)}
+                      placeholder="CodeChef Handle"
+                      className="w-full bg-[#110e1b] border border-slate-800 px-4 py-2.5 rounded-xl text-slate-100 outline-none focus:border-royal/20 text-xs"
+                    />
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={leetcodeHandle}
+                      onChange={(e) => setLeetcodeHandle(e.target.value)}
+                      placeholder="LeetCode Handle"
+                      className="w-full bg-[#110e1b] border border-slate-800 px-4 py-2.5 rounded-xl text-slate-100 outline-none focus:border-royal/20 text-xs"
+                    />
                   </div>
                 </div>
               </div>
