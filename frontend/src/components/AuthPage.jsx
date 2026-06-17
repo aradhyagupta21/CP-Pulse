@@ -53,9 +53,15 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
     setLoading(true);
     try {
       const endpoint = isLogin ? 'login' : 'signup';
-      const payload = isLogin 
-        ? { username: username.trim(), password: password.trim() }
-        : { 
+      let payload;
+      if (isLogin) {
+        const inputStr = username.trim();
+        const isEmail = inputStr.includes('@');
+        payload = isEmail 
+          ? { email: inputStr, password: password.trim() }
+          : { username: inputStr, password: password.trim() };
+      } else {
+        payload = { 
             username: username.trim(), 
             email: email.trim(),
             password: password.trim(),
@@ -70,6 +76,7 @@ export default function AuthPage({ onAuthSuccess, connError, onRetryConnection, 
             codechefHandle: codechefHandle.trim(),
             leetcodeHandle: leetcodeHandle.trim()
           };
+      }
 
       const res = await axios.post(`${BACKEND_URL}/users/${endpoint}`, payload);
       onAuthSuccess(res.data);

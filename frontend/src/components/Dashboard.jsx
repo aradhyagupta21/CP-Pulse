@@ -806,7 +806,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                 <div className="flex justify-between items-center border-t border-slate-800/80 pt-1.5">
                   <span className="text-xs text-slate-500 font-medium">CodeChef:</span>
                   <span className="text-sm font-extrabold text-slate-100">
-                    {ccRating > 0 ? `${ccRating} ★` : 'N/A'}
+                    {ccRating > 0 ? `${ccRating}` : 'N/A'}
                   </span>
                 </div>
                 <div className="flex justify-between items-center border-t border-slate-800/80 pt-1.5">

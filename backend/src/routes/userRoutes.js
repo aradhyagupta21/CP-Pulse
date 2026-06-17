@@ -104,12 +104,13 @@ router.post('/register', async (req, res) => {
 // Login user
 router.post('/login', async (req, res) => {
   try {
-    const { username, password } = req.body; // 'username' here acts as the identifier (username or email)
-    if (!username || !password) {
+    const { username, email, password } = req.body;
+    const identifier = username || email;
+    if (!identifier || !password) {
       return res.status(400).json({ error: 'Username/Email and password are required.' });
     }
 
-    const user = await dbHelper.getUserByIdentifier(username);
+    const user = await dbHelper.getUserByIdentifier(identifier);
     if (!user) {
       return res.status(401).json({ error: 'Invalid username or password.' });
     }
