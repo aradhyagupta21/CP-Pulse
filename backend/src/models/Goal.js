@@ -12,12 +12,12 @@ const GoalSchema = new mongoose.Schema({
   },
   platform: {
     type: String,
-    enum: ['Codeforces', 'CodeChef', 'LeetCode', 'All'],
+    enum: ['Codeforces', 'CodeChef', 'LeetCode', 'GFG', 'All'],
     required: true
   },
   targetType: {
     type: String,
-    enum: ['solved_count', 'rating'],
+    enum: ['solved_count', 'rating', 'streak_count'],
     required: true
   },
   targetValue: {

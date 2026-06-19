@@ -159,6 +159,9 @@ export default function ContestSimulator({ currentUser }) {
                 onChange={(e) => setCustomRating(e.target.value)}
                 className="w-full bg-[#110e1b] border border-slate-800/80 px-4 py-3 rounded-xl text-slate-100 focus:border-brand-indigo outline-none transition"
               />
+              {(customRating < 800 || customRating > 3500) && (
+                <p className="text-red-400 text-xs mt-2 font-medium">Warning: Problem levels below 800 or above 3500 are not supported and may result in errors.</p>
+              )}
             </div>
             
             <div>

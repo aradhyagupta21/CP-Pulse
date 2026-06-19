@@ -1,6 +1,7 @@
 import express from 'express';
 import { dbHelper } from '../config/dbHelper.js';
 import { apiService } from '../services/apiService.js';
+import { calculateStreak } from '../utils/streakCalculator.js';
 
 const router = express.Router();
 
@@ -73,6 +74,11 @@ router.post('/:userId/sync', async (req, res) => {
       } else if (goal.targetType === 'rating') {
         const platStat = updatedStats.find(s => s.platform === goal.platform);
         updatedVal = platStat ? (platStat.currentRating || 0) : 0;
+      } else if (goal.targetType === 'streak_count') {
+        const progress = await dbHelper.getSheetProgress(userId);
+        const patternToMatch = goal.platform === 'GFG' ? 'gfg_potd' : 'potd';
+        const filteredProgress = progress.filter(p => p.patternId === patternToMatch && p.status === 'solved');
+        updatedVal = calculateStreak(filteredProgress);
       }
       
       const isCompleted = updatedVal >= goal.targetValue;

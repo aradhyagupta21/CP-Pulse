@@ -58,6 +58,7 @@ export default function Goals({ currentUser, goals, onGoalAdd, onGoalDelete }) {
       'Codeforces': 'bg-brand-indigo/10 border-royal/20 text-brand-indigo',
       'CodeChef': 'bg-brand-indigo/10 border-brand-indigo/20 text-slate-100',
       'LeetCode': 'bg-brand-indigo/10 border-royal/20 text-brand-indigo',
+      'GFG': 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
       'All': 'bg-slate-50 border-slate-800/80 text-slate-400'
     };
     return classes[plat] || classes.All;
@@ -71,6 +72,9 @@ export default function Goals({ currentUser, goals, onGoalAdd, onGoalDelete }) {
           Target Goal Setting
         </h1>
         <p className="text-slate-500 mt-1">Configure and monitor your milestones for ratings and total solved counts.</p>
+        <p className="text-sm text-slate-400 mt-3 bg-brand-indigo/10 border border-brand-indigo/20 px-4 py-2 rounded-lg inline-block">
+          <strong className="text-brand-indigo">Note:</strong> Streak count is currently available only for LeetCode and GFG. For GFG, the streak is automatically synced with your Problem of the Day (POTD) streak.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -104,8 +108,11 @@ export default function Goals({ currentUser, goals, onGoalAdd, onGoalDelete }) {
                 <select
                   value={platform}
                   onChange={(e) => {
-                    setPlatform(e.target.value);
-                    if (e.target.value === 'All') setTargetType('solved_count');
+                    const newPlatform = e.target.value;
+                    setPlatform(newPlatform);
+                    if (newPlatform === 'All') setTargetType('solved_count');
+                    else if (newPlatform === 'GFG') setTargetType('streak_count');
+                    else if (targetType === 'streak_count') setTargetType('solved_count');
                   }}
                   className="w-full bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-xl text-slate-100 outline-none focus:border-royal/20"
                 >
@@ -113,6 +120,7 @@ export default function Goals({ currentUser, goals, onGoalAdd, onGoalDelete }) {
                   <option value="Codeforces">Codeforces</option>
                   <option value="CodeChef">CodeChef</option>
                   <option value="LeetCode">LeetCode</option>
+                  <option value="GFG">GeeksforGeeks</option>
                 </select>
               </div>
 
@@ -124,8 +132,9 @@ export default function Goals({ currentUser, goals, onGoalAdd, onGoalDelete }) {
                   disabled={platform === 'All'}
                   className="w-full bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-xl text-slate-100 outline-none focus:border-royal/20 disabled:opacity-40"
                 >
-                  <option value="solved_count">Solved Count</option>
-                  <option value="rating">Rating Target</option>
+                  <option value="solved_count" disabled={platform === 'GFG'}>Solved Count</option>
+                  <option value="rating" disabled={platform === 'GFG'}>Rating Target</option>
+                  <option value="streak_count" disabled={platform !== 'GFG' && platform !== 'LeetCode'}>Streak Count</option>
                 </select>
               </div>
             </div>
@@ -181,7 +190,7 @@ export default function Goals({ currentUser, goals, onGoalAdd, onGoalDelete }) {
                           {goal.platform}
                         </span>
                         <span className="text-slate-500 text-xs font-medium">
-                          {goal.targetType === 'rating' ? 'Rating Target' : 'Problems Count'}
+                          {goal.targetType === 'rating' ? 'Rating Target' : goal.targetType === 'streak_count' ? 'Streak Target' : 'Problems Count'}
                         </span>
                         {goal.isCompleted && (
                           <span className="px-2 py-0.5 text-[10px] font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full flex items-center gap-1">

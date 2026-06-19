@@ -5,7 +5,7 @@ import { Calendar, CheckCircle2, ExternalLink, Flame, ChevronRight, Zap } from '
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
 
-export default function Potd({ currentUser }) {
+export default function Potd({ currentUser, onUpdate }) {
   const [liveLcPotd, setLiveLcPotd] = useState(null);
   const [liveGfgPotd, setLiveGfgPotd] = useState(null);
   
@@ -79,6 +79,8 @@ export default function Potd({ currentUser }) {
         if (newStatus === 'solved') setGfgPotdProgress(prev => [...prev, res.data]);
         else setGfgPotdProgress(prev => prev.filter(p => p.problemId !== problemId));
       }
+      
+      if (onUpdate) onUpdate();
     } catch (err) {
       console.error('Failed to update status:', err);
       // Revert optimistic update

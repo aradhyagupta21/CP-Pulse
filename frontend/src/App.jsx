@@ -168,6 +168,16 @@ export default function App() {
     fetchUserData();
   }, [currentUser]);
 
+  const fetchGoalsOnly = async () => {
+    if (!currentUser) return;
+    try {
+      const res = await axios.get(`${BACKEND_URL}/goals/${currentUser._id}`);
+      setGoals(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // Sync user profiles
   const handleSync = async () => {
     if (!currentUser) return;
@@ -289,7 +299,7 @@ export default function App() {
       case 'cp31':
         return <Cp31Sheet />;
       case 'potd':
-        return <Potd currentUser={currentUser} />;
+        return <Potd currentUser={currentUser} onUpdate={fetchGoalsOnly} />;
       default:
         return <div className="text-slate-400">Section not found.</div>;
     }

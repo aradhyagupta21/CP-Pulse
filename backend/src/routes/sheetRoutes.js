@@ -1,5 +1,6 @@
 import express from 'express';
 import { dbHelper } from '../config/dbHelper.js';
+import { calculateStreak } from '../utils/streakCalculator.js';
 
 const router = express.Router();
 
@@ -24,6 +25,28 @@ router.post('/update', async (req, res) => {
     }
 
     const updatedProgress = await dbHelper.upsertSheetProgress(userId, problemId, patternId, status);
+
+    // Auto-update streak goals
+    if (patternId === 'potd' || patternId === 'gfg_potd') {
+      const goals = await dbHelper.getGoals(userId);
+      const streakGoals = goals.filter(g => g.targetType === 'streak_count');
+      if (streakGoals.length > 0) {
+        const allProgress = await dbHelper.getSheetProgress(userId);
+        
+        for (const goal of streakGoals) {
+          const matchPattern = goal.platform === 'GFG' ? 'gfg_potd' : 'potd';
+          if (patternId === matchPattern) {
+            const filtered = allProgress.filter(p => p.patternId === matchPattern && p.status === 'solved');
+            const newStreak = calculateStreak(filtered);
+            await dbHelper.updateGoal(goal._id, { 
+              currentValue: newStreak, 
+              isCompleted: newStreak >= goal.targetValue 
+            });
+          }
+        }
+      }
+    }
+
     res.json(updatedProgress);
   } catch (error) {
     res.status(500).json({ error: error.message });
