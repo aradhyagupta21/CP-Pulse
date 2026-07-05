@@ -1,0 +1,1931 @@
+{
+  "Ideal Time : 5-10 mins": [],
+  "Easy": [
+    {
+      "name": "Ideal Time : 5-10 mins",
+      "difficulty": "Medium",
+      "color": 0
+    }
+  ],
+  "Medium": [
+    {
+      "name": "Ideal Time : 15-20 mins",
+      "difficulty": "Medium",
+      "color": 0
+    }
+  ],
+  "Hard": [
+    {
+      "name": "Ideal Time : 40-60 mins (based on Qs) | 88 Qs",
+      "difficulty": "Medium",
+      "color": 0
+    }
+  ],
+  "Arrays": [
+    {
+      "name": "Maximum and Minimum Element in an Array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Reverse the Array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Maximum-Subarray",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Contains Duplicate",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Chocolate Distribution Problem",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Search in Rotated Sorted Array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Next Permutation",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Best time to Buy and Sell Stock",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Repeat and Missing Number Array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Kth-Largest Element in an Array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Trapping Rain Water",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Product of Array Except Self",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Maximum Product Subarray",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find Minimum in Rotated Sorted Array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find Pair with Sum in Sorted & Rotated Array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "3Sum",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Container With Most Water",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Given Sum Pair",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Kth - Smallest Element",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Merge Overlapping Intervals",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find Minimum Number of Merge Operations to Make an Array Palindrome",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Given an Array of Numbers Arrange the Numbers to Form the Biggest Number",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Space Optimization Using Bit Manipulations",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Subarray Sum Divisible K",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Print all Possible Combinations of r Elements in a Given Array of Size n",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Mo's Algorithm",
+      "difficulty": "Medium",
+      "color": ""
+    }
+  ],
+  "Strings": [
+    {
+      "name": "Valid Palindrome",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Valid Anagram",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Valid parentheses",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Remove Consecutive Characters",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Longest Common Prefix",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Convert a Sentence into its Equivalent Mobile Numeric Keypad Sequence",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Print all the Duplicates in the Input String",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Longest Substring without Repeating Characters",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Longest Repeating Character Replacement",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Group Anagrams",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Longest Palindromic Substring",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Palindromic Substrings",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Next Permutation",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Count Palindromic Subsequences",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Smallest Window in a String Containing all the Characters of Another String",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Wildcard String Matching",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Longest Prefix Suffix",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Rabin-Karp Algorithm for Pattern Searching",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Transform One String to Another using Minimum Number of Given Operation",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Minimum Window Substring",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Boyer Moore Algorithm for Pattern Searching",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Word Wrap",
+      "difficulty": "Medium",
+      "color": ""
+    }
+  ],
+  "2D Arrays": [
+    {
+      "name": "Zigzag (or diagonal) Traversal of Matrix",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Set Matrix Zeroes",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Spiral Matrix",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Rotate Image",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Word Search",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find the Number of Islands | Set 1 (Using DFS)",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Given a Matrix of ‘O’ and ‘X’, Replace ‘O’ with ‘X’ if Surrounded by ‘X’",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find a Common Element in all Rows of a Given Row-Wise Sorted Matrix",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Create a Matrix with Alternating Rectangles of O and X",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Maximum Size Rectangle of all 1s",
+      "difficulty": "Medium",
+      "color": ""
+    }
+  ],
+  "Searching & Sorting": [
+    {
+      "name": "Permute Two Arrays such that Sum of Every Pair is Greater or Equal to K",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "counting sort",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "find common elements three sorted arrays",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Searching in an array where adjacent differ by at most k",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "ceiling in a sorted array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Piar with given difference",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "majority element",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "count triplets with sum smaller that a given value",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Maximum Sum Subsequence with no adjacent elements",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Merge Sorted Arrays using O(1) Space",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Inversion of Array",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Find Duplicates in O(n) Time and O(1) Extra Space",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Radix Sort",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Product of Array except itself",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Make all Array Elements Equal",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Check if Reversing a Sub Array Make the Array Sorted",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Find Four Elements that Sum to a Given Value",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Median of Two Sorted Array with Different Size",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Median of Stream of Integers Running Integers",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Print Subarrays with 0 Sum",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Aggressive Cows",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Allocate Minimum number of Pages",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Minimum Swaps to Sort",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    }
+  ],
+  "Backtracking": [
+    {
+      "name": "Backtracking Set 2 Rat in a Maze",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Combinational Sum",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Crossword-Puzzle",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Longest Possible Route in a Matrix with Hurdles",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Printing all solutions in N-Queen Problem",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Solve the Sudoku",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Partition Equal Subset Sum",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "M Coloring Problem",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Knight Tour",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Soduko",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Remove Invalid Parentheses",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Word Break Problem using Backtracking",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Print all Palindromic Partitions of a String",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Find Shortest Safe Route in a Path with Landmines",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Partition of Set into K Subsets with Equal Sum",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Backtracking set-7 hamiltonian cycle",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "tug-of-war",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Maximum Possible Number by doing at most K swaps",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Backtracking set-8 solving cryptarithmetic puzzles",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Find paths from corner cell to middle cell in maze",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Arithmetic Expressions",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    }
+  ],
+  "Linked List": [
+    {
+      "name": "Reverse Linked List",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Linked List Cycle",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Merge Two Sorted Lists",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Delete without Head node",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Remove duplicates from an unsorted linked list",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Sort a linked list of 0s-1s-or-2s",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Multiply two numbers represented linked lists",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Remove nth node from end of list",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Reorder List",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Detect and remove loop in a linked list",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Write a Function to get the Intersection Point of two Linked Lists",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Flatten a linked list with next and child pointers",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Linked list in zig-zag fashion",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Reverse a doubly linked list",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Delete nodes which have a greater value on right side",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Segregate even and odd Elements in a Linked List",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Point to next higher value node in a linked list with an Arbitrary Pointer",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Rearrange a given linked list in place",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Sort Biotonic Doubly Linked Lists",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Merge K Sorted Lists",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Merge sort for linked list",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Quicksort on singly-linked list",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Sum of two linked lists",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Flattening a linked list",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Clone a linked list with next and random Pointer",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Subtract two numbers represented as linked lists",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    }
+  ],
+  "Stacks & Queues": [
+    {
+      "name": "Implement two stacks in an Array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Evaluation of Postfix Expression",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Implement Stack using Queues",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Queue Reversal",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Implement Stack Queue using Deque",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Reverse first k elements of queue",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Design Stack with Middle Operation",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Infix to Postfix",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Design and Implement Special stack",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Longest Valid String",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find if an expression has duplicate parenthesis or not",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Stack permutations check if an array is stack permutation of other",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Count natural numbers whose permutation greater number",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Sort a stack using Recursion",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Queue based approach for first non repeating character in a stream",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "The Celebrity Problem",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Next larger Element",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Distance of nearest cell",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Rotten-oranges",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Next smaller element",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Circular-tour",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Efficiently implement k-stacks single array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "The celebrity problem",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Iterative tower of hanoi",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find the maximum of minimums for every window size in a given array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "lru cache implementation",
+      "difficulty": "Medium",
+      "color": "FFFFFF"
+    },
+    {
+      "name": "Find a tour that visits all stations",
+      "difficulty": "Medium",
+      "color": ""
+    }
+  ],
+  "Greedy": [
+    {
+      "name": "Activity selection problem greedy algo",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Greedy algorithm to find minimum number of coins",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Minimum sum two numbers formed digits array-2",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Minimum sum absolute difference pairs two arrays",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find maximum height pyramid from the given array of objects",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Minimum cost for acquiring all coins with k extra coins allowed with every coin",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find maximum equal sum of every three stacks",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Job sequencing problem",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Greedy algorithm egyptian fraction",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Fractional knapsack problem",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Maximum length chain of pairs",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find smallest number with given number of digits and digit sum",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Maximize sum of consecutive differences circular-array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "paper-cut minimum number squares",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Lexicographically smallest array-k consecutive swaps",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Problems-CHOCOLA",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find minimum time to finish all jobs with given constraints",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Job sequencing using disjoint set union",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Rearrange characters string such that no two adjacent are same",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Minimum edges to reverse to make path from a source to a destination",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Minimize Cash Flow among a given set of friends who have borrowed money from each other",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Minimum Cost to cut a board into squares",
+      "difficulty": "Medium",
+      "color": ""
+    }
+  ],
+  "Binary Trees": [
+    {
+      "name": "Maximum Depth of Binary Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Reverse Level Order Traversal",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Subtree of Another Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Invert Binary Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Binary Tree Level Order Traversal",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Left View of Binary Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Right View of Binary Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "ZigZag Tree Traversal",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Create a mirror tree from the given binary tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Leaf at same level",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Check for Balanced Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Transform to Sum Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Check if Tree is Isomorphic",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Same Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Construct Binary Tree from Preorder and Inorder Traversal",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Height of Binary Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Diameter of a Binary Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Top View of Binary Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Bottom View of Binary Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Diagonal Traversal of Binary Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Boundary Traversal of binary tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Construct Binary Tree from String with Brackets",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Minimum swap required to convert binary tree to binary search tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Duplicate subtree in Binary Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Check if a given graph is tree or not",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Lowest Common Ancestor in a Binary Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Min distance between two given nodes of a Binary Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Duplicate Subtrees",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Kth ancestor of a node in binary tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Binary Tree Maximum Path Sum",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Serialize and Deserialize Binary Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Binary Tree to DLL",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Print all k-sum paths in a binary tree",
+      "difficulty": "Medium",
+      "color": ""
+    }
+  ],
+  "Binary Search Trees": [
+    {
+      "name": "Lowest Common Ancestor of a Binary Search Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Binary Search Tree | Set 1 (Search and Insertion)",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Minimum element in BST",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Predecessor and Successor",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Check whether BST contains Dead End",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Binary Tree to BST",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Kth largest element in BST",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Validate Binary Search Tree",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Kth Smallest Element in a BST",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Delete Node in a BST",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Flatten BST to sorted list",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Preorder to Postorder",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Count BST nodes that lie in a given range",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Populate Inorder Successor for all Nodes",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Convert Normal BST to Balanced BST",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Merge two BSTs",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Given n appointments, find all conflicting appointments",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Replace every element",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Construct BST from given preorder traversal",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find median of BST in O(n) time and O(1) space",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Largest BST in a Binary Tree",
+      "difficulty": "Medium",
+      "color": ""
+    }
+  ],
+  "Heaps & Hashing": [
+    {
+      "name": "Choose k array elements such that difference of maximum and minimum is minimized",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Heap Sort",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Top K Frequent Elements",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "k largest elements in an array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Next Greater Element",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "K’th Smallest/Largest Element in Unsorted Array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find the maximum repeating number in O(n) time and O(1) extra space",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "K-th smallest element after removing some integers from natural numbers",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find k closest elements to a given value",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "K’th largest element in a stream",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Connect Ropes",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Cuckoo Hashing",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Itinerary from a List of Tickets",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Largest Subarray with 0 Sum",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Count distinct elements in every window of size  k",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Group Shifted Strings",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Merge K Sorted lists",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find Median from Data Stream",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Sliding Window Maximum",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find the smallest positive number",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find Surpasser Count of each element in array",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Tournament Tree and Binary Heap",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Check for palindrome",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Length of the largest subarray with contiguous elements",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Palindrome Substring Queries",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Subarray distinct elements",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find the recurring function",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "K maximum sum combinations from two arrays",
+      "difficulty": "Medium",
+      "color": ""
+    }
+  ],
+  "Graphs": [
+    {
+      "name": "BFS",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "DFS",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Flood Fill Algorithm",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Number of Triangles",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Detect cycle in a graph",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Detect cycle in an undirected graph",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Rat in a Maze Problem",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Steps by Knight",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Clone graph",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Number of Operations to Make Network Connected",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Dijkstra’s shortest path algorithm",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Topological Sort",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Oliver and the Game",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Minimum time taken by each job to be completed given by a Directed Acyclic Graph",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find whether it is possible to finish all tasks or not from given dependencies",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find the number of islands",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Prim's Algo",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Negative Weighted Cycle",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Floyd Warshall",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Graph Coloring",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Snakes and Ladders",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Kosaraju's Theorem",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Journey to moon",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Vertex Cover",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "M Coloring Problem",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Cheapest Flights Within K Stops",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find if there is a path of more than k length from a source",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Bellman Ford",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Bipartitie Graph",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Word-Ladder",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Allen Dictionary",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Kruskals MST",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Total number spanning trees graph",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Travelling Salesman",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find longest path directed acyclic graph",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Two Clique Problem",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Minimise the cash flow",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Chinese postman",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Water Jug",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Water Jug 2",
+      "difficulty": "Medium",
+      "color": ""
+    }
+  ],
+  "Tries": [
+    {
+      "name": "Construct a trie from scratch",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Print unique rows in a given boolean matrix",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Word Break Problem | (Trie solution)",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Given a sequence of words, print all anagrams together",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find shortest unique prefix for every word in a given list",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Implement a Phone Directory",
+      "difficulty": "Medium",
+      "color": ""
+    }
+  ],
+  "DP": [
+    {
+      "name": "Knapsack with Duplicate Items",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "BBT counter",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Reach a given score",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Maximum difference of zeros and ones in binary string",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Climbing Stairs",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Permutation Coefficient",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Longest Repeating Subsequence",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Pairs with specific difference",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Longest subsequence-1",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Coin Change",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "LIS",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Longest Common Subsequence",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Word Break",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Combination Sum IV",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "House Robber",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Houe Robber 2",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Decode Ways",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Unique Paths",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Jumps Game",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Knapsack Problem",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "nCr",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Catalan Number",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Edit Distance",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Subset Sum",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Gold mine",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Assembly Line Scheduling",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Maximize The Cut Segments",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Maximum sum increasing subsequence",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Count all subsequences having product less than K",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Maximum sum increasing subsequence",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Egg dropping puzzle",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Max length chain",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Largest Square in Matrix",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Maximum Path Sum",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Minimum Number of Jumps",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Minimum removals from array to make max – min <= K",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Longest Common Substring",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Partition Equal Subset Sum",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Longest Palindromic Subsequnce",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Count Palindromic Subsequences",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Longest Palindromic Substring",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Longest Alternating Sequence",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Weighted Job Scheduling",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Coin Game",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Coin Game Winner",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Optimal Strategy for a game",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Word Wrap",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Mobile numeric keypad",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Maximum Length of Pair Chain",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Matrix Chain Multiplication",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Maximum profit by buying and selling a share at most twice",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Optimal BST",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Largest Submatrix with sum 0",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Largest area rectangular sub-matrix with equal number of 1’s and 0’s",
+      "difficulty": "Medium",
+      "color": ""
+    }
+  ],
+  "Bit Manipulation": [
+    {
+      "name": "Count set bits in an integer",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find the two non-repeating elements in an array of repeating elements",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Program to find whether a no is power of two",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Find position of the only set bit",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Count number of bits to be flipped to convert A to B",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Count total set bits in all numbers from 1 to n",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Copy set bits in a range",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Calculate square of a number without using *, / and pow()",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Divide two integers without using multiplication, division and mod operator",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Power Set",
+      "difficulty": "Medium",
+      "color": ""
+    }
+  ],
+  "Segment Trees": [
+    {
+      "name": "Range Sum Query - Immutable",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Range Minimum Query",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Range Sum Query - Mutable",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Create Sorted Array through Instructions",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Count of Range Sum",
+      "difficulty": "Medium",
+      "color": ""
+    },
+    {
+      "name": "Count of Smaller Numbers After Self",
+      "difficulty": "Medium",
+      "color": ""
+    }
+  ]
+}

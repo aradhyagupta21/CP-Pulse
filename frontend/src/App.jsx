@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { LayoutDashboard, BarChart3, CalendarRange, Target, Flame, Users, Terminal, LogOut, ChevronRight, BookOpen, Shield, Activity, Layers, CheckCircle, Trash2, Menu, X } from 'lucide-react';
+import { LayoutDashboard, BarChart3, CalendarRange, Target, Flame, Users, Terminal, LogOut, ChevronRight, BookOpen, Shield, Activity, Layers, CheckCircle, Trash2, Menu, X, Briefcase, Moon, Sun } from 'lucide-react';
 import axios from 'axios';
 import Dashboard from './components/Dashboard';
 import AuthPage from './components/AuthPage';
@@ -11,6 +11,7 @@ import Leaderboard from './components/Leaderboard';
 import ContestSimulator from './components/ContestSimulator';
 import Potd from './components/Potd';
 import TopicwiseSheet from './components/TopicwiseSheet';
+import InterviewPractice from './components/InterviewPractice';
 import Cp31Sheet from './components/Cp31Sheet';
 import StriverSheet from './components/StriverSheet';
 
@@ -30,15 +31,21 @@ export default function App() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [theme, setTheme] = useState(() => localStorage.getItem('cp_tracker_mode') || 'dark');
 
-  // Lock strictly to light mode
+  // Apply theme
   useEffect(() => {
     const root = document.documentElement;
-    root.setAttribute('data-mode', 'light');
-    localStorage.setItem('cp_tracker_mode', 'light');
-    root.classList.add('light');
-    root.classList.remove('dark');
-  }, []);
+    root.setAttribute('data-mode', theme);
+    localStorage.setItem('cp_tracker_mode', theme);
+    if (theme === 'dark') {
+      root.classList.add('dark');
+      root.classList.remove('light');
+    } else {
+      root.classList.add('light');
+      root.classList.remove('dark');
+    }
+  }, [theme]);
 
   // Fetch initial users list for leaderboard stand
   const fetchUsers = async () => {
@@ -296,6 +303,8 @@ export default function App() {
         return <StriverSheet currentUser={currentUser} />;
       case 'topics':
         return <TopicwiseSheet currentUser={currentUser} />;
+      case 'interview-practice':
+        return <InterviewPractice currentUser={currentUser} />;
       case 'cp31':
         return <Cp31Sheet />;
       case 'potd':
@@ -363,6 +372,7 @@ export default function App() {
               { id: 'contests', label: 'Contest', icon: Flame },
               { id: 'potd', label: 'Problem of the day', icon: CalendarRange },
               { id: 'topics', label: 'Topicwise Problems', icon: Layers },
+              { id: 'interview-practice', label: 'Interview Practice', icon: Briefcase },
               { id: 'cp31', label: 'CP-31 Sheet', icon: CheckCircle },
               { id: 'striver', label: "Striver's A2Z Sheet", icon: BookOpen },
               { id: 'simulator', label: 'Virtual Contest', icon: Terminal },
@@ -391,6 +401,16 @@ export default function App() {
 
         {/* Footer info showing connection health and logout option */}
         <div className="pt-4 border-t border-slate-800/50 space-y-3">
+
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition"
+          >
+            <div className="flex items-center gap-3">
+              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+            </div>
+          </button>
 
           <button
             onClick={handleLogout}

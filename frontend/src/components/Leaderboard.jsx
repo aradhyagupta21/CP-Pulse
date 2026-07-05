@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 import { Trophy, Medal } from 'lucide-react';
 
 export default function Leaderboard({ currentUser, leaderboard }) {

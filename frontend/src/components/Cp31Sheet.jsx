@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 import { ExternalLink, CheckCircle } from 'lucide-react';
 
 export default function Cp31Sheet() {

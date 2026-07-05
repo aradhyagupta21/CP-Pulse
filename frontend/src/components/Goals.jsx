@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 import { useState } from 'react';
 import { Trash2, Plus, Flag, Trophy, } from 'lucide-react';
 import axios from 'axios';
