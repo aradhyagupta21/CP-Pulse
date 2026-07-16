@@ -9,7 +9,7 @@ const simulationRecordSchema = new mongoose.Schema({
   division: {
     type: String,
     required: true,
-    enum: ['Div 1', 'Div 2', 'Div 3', 'Div 4']
+    enum: ['Div 1', 'Div 2', 'Div 3', 'Div 4', 'Custom']
   },
   targetRating: {
     type: Number,
