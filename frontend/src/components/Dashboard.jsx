@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { RefreshCw, UserCheck, Flame, BookOpen, Award, Target, Plus, ShieldCheck, Edit, Key, HelpCircle, User, BarChart2, ChefHat, Code2 } from 'lucide-react';
+import { RefreshCw, UserCheck, Flame, BookOpen, Award, Target, Plus, ShieldCheck, Edit, Key, HelpCircle, User, BarChart2, ChefHat, Code2, ExternalLink } from 'lucide-react';
 import axios from 'axios';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
@@ -24,6 +24,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
   const [editCfHandle, setEditCfHandle] = useState('');
   const [editCcHandle, setEditCcHandle] = useState('');
   const [editLcHandle, setEditLcHandle] = useState('');
+  const [editGfgHandle, setEditGfgHandle] = useState('');
   const [editUsername, setEditUsername] = useState('');
   const [editFullName, setEditFullName] = useState('');
   const [editLocation, setEditLocation] = useState('');
@@ -180,6 +181,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
     setEditCfHandle(currentUser?.codeforcesHandle || '');
     setEditCcHandle(currentUser?.codechefHandle || '');
     setEditLcHandle(currentUser?.leetcodeHandle || '');
+    setEditGfgHandle(currentUser?.gfgHandle || '');
     setEditUsername(currentUser?.username || '');
     setEditFullName(currentUser?.fullName || '');
     setEditLocation(currentUser?.location || '');
@@ -220,7 +222,8 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
         cgpa: editCgpa.trim(),
         codeforcesHandle: editCfHandle.trim(),
         codechefHandle: editCcHandle.trim(),
-        leetcodeHandle: editLcHandle.trim()
+        leetcodeHandle: editLcHandle.trim(),
+        gfgHandle: editGfgHandle.trim()
       });
       onUserUpdate(res.data);
       setShowEditHandles(false);
@@ -590,7 +593,7 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                 </div>
 
                 <p className="text-xs font-bold text-brand-indigo uppercase tracking-wider border-b border-slate-800/80 pb-2 mt-4">Platform Handles</p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-slate-500">Codeforces Handle</label>
                   <input 
@@ -619,6 +622,16 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                     onChange={(e) => setEditLcHandle(e.target.value)}
                     placeholder="e.g. aradhya_1"
                     className="w-full bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-royal/20"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-500">GeeksforGeeks Handle</label>
+                  <input 
+                    type="text" 
+                    value={editGfgHandle} 
+                    onChange={(e) => setEditGfgHandle(e.target.value)}
+                    placeholder="e.g. aradhyagupta2108"
+                    className="w-full bg-[#110e1b] border border-slate-800/80 px-3 py-2 rounded-lg text-slate-100 outline-none focus:border-emerald-500/20"
                   />
                 </div>
                 </div>
@@ -868,9 +881,21 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
           {/* Platform Profiles Details */}
           <div>
             <h2 className="text-2xl font-bold text-slate-100 mb-6">Linked Handles Breakdown</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {/* Codeforces Panel */}
-              <div className="bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl relative overflow-hidden group">
+              <div 
+                onClick={() => {
+                  if (currentUser.codeforcesHandle) {
+                    window.open(`https://codeforces.com/profile/${currentUser.codeforcesHandle}`, '_blank', 'noopener,noreferrer');
+                  } else {
+                    handleStartEdit();
+                  }
+                }}
+                title={currentUser.codeforcesHandle ? `Open @${currentUser.codeforcesHandle} on Codeforces` : "Click to link Codeforces handle"}
+                className={`bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl relative overflow-hidden group cursor-pointer transition-all duration-200 hover:border-brand-indigo/50 hover:shadow-lg hover:shadow-brand-indigo/10 ${
+                  currentUser.codeforcesHandle ? 'hover:-translate-y-0.5' : ''
+                }`}
+              >
                 <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
                   <BarChart2 className="w-24 h-24 text-brand-indigo" />
                 </div>
@@ -879,8 +904,11 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                     <span className="px-2.5 py-1 text-xs font-bold bg-brand-indigo/10 border border-royal/20 text-brand-indigo rounded-full">
                       Codeforces
                     </span>
-                    <h3 className="text-xl font-bold text-slate-100 mt-3">
+                    <h3 className="text-xl font-bold text-slate-100 mt-3 flex items-center gap-2 group-hover:text-brand-indigo transition-colors">
                       {currentUser.codeforcesHandle ? `@${currentUser.codeforcesHandle}` : 'Not Linked'}
+                      {currentUser.codeforcesHandle && (
+                        <ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-brand-indigo transition-colors" />
+                      )}
                     </h3>
                   </div>
                 </div>
@@ -916,8 +944,11 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                     <p className="text-xs text-slate-500">Link your Codeforces handle to synchronize solved counts, rank badges, and rating graphs.</p>
                     <button
                       type="button"
-                      onClick={handleStartEdit}
-                      className="w-full text-center py-2 bg-brand-indigo/10 border border-royal/20 rounded-xl text-brand-indigo font-bold text-xs hover:bg-brand-indigo/10 transition"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStartEdit();
+                      }}
+                      className="w-full text-center py-2 bg-brand-indigo/10 border border-royal/20 rounded-xl text-brand-indigo font-bold text-xs hover:bg-brand-indigo/20 transition"
                     >
                       Configure Codeforces Account
                     </button>
@@ -926,7 +957,19 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
               </div>
 
               {/* CodeChef Panel */}
-              <div className="bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl relative overflow-hidden group">
+              <div 
+                onClick={() => {
+                  if (currentUser.codechefHandle) {
+                    window.open(`https://www.codechef.com/users/${currentUser.codechefHandle}`, '_blank', 'noopener,noreferrer');
+                  } else {
+                    handleStartEdit();
+                  }
+                }}
+                title={currentUser.codechefHandle ? `Open @${currentUser.codechefHandle} on CodeChef` : "Click to link CodeChef handle"}
+                className={`bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl relative overflow-hidden group cursor-pointer transition-all duration-200 hover:border-brand-indigo/50 hover:shadow-lg hover:shadow-brand-indigo/10 ${
+                  currentUser.codechefHandle ? 'hover:-translate-y-0.5' : ''
+                }`}
+              >
                 <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
                   <ChefHat className="w-24 h-24 text-slate-400" />
                 </div>
@@ -935,8 +978,11 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                     <span className="px-2.5 py-1 text-xs font-bold bg-brand-indigo/10 border border-brand-indigo/20 text-slate-100 rounded-full">
                       CodeChef
                     </span>
-                    <h3 className="text-xl font-bold text-slate-100 mt-3">
+                    <h3 className="text-xl font-bold text-slate-100 mt-3 flex items-center gap-2 group-hover:text-brand-indigo transition-colors">
                       {currentUser.codechefHandle ? `@${currentUser.codechefHandle}` : 'Not Linked'}
+                      {currentUser.codechefHandle && (
+                        <ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-brand-indigo transition-colors" />
+                      )}
                     </h3>
                   </div>
                 </div>
@@ -972,7 +1018,10 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                     <p className="text-xs text-slate-500">Link your CodeChef handle to track star rankings, global ranks, and solve rates.</p>
                     <button
                       type="button"
-                      onClick={handleStartEdit}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStartEdit();
+                      }}
                       className="w-full text-center py-2 bg-brand-indigo/10 border border-brand-indigo/20 rounded-xl text-slate-100 font-bold text-xs hover:bg-brand-indigo/20 transition"
                     >
                       Configure CodeChef Account
@@ -982,7 +1031,19 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
               </div>
 
               {/* LeetCode Panel */}
-              <div className="bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl relative overflow-hidden group">
+              <div 
+                onClick={() => {
+                  if (currentUser.leetcodeHandle) {
+                    window.open(`https://leetcode.com/u/${currentUser.leetcodeHandle}`, '_blank', 'noopener,noreferrer');
+                  } else {
+                    handleStartEdit();
+                  }
+                }}
+                title={currentUser.leetcodeHandle ? `Open @${currentUser.leetcodeHandle} on LeetCode` : "Click to link LeetCode handle"}
+                className={`bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl relative overflow-hidden group cursor-pointer transition-all duration-200 hover:border-brand-indigo/50 hover:shadow-lg hover:shadow-brand-indigo/10 ${
+                  currentUser.leetcodeHandle ? 'hover:-translate-y-0.5' : ''
+                }`}
+              >
                 <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
                   <Code2 className="w-24 h-24 text-amber-500" />
                 </div>
@@ -991,8 +1052,11 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                     <span className="px-2.5 py-1 text-xs font-bold bg-brand-indigo/10 border border-royal/20 text-brand-indigo rounded-full">
                       LeetCode
                     </span>
-                    <h3 className="text-xl font-bold text-slate-100 mt-3">
+                    <h3 className="text-xl font-bold text-slate-100 mt-3 flex items-center gap-2 group-hover:text-brand-indigo transition-colors">
                       {currentUser.leetcodeHandle ? `@${currentUser.leetcodeHandle}` : 'Not Linked'}
+                      {currentUser.leetcodeHandle && (
+                        <ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-brand-indigo transition-colors" />
+                      )}
                     </h3>
                   </div>
                 </div>
@@ -1028,10 +1092,78 @@ export default function Dashboard({ currentUser, stats, goals, onSync, isLoading
                     <p className="text-xs text-slate-500">Link your LeetCode handle to synchronize acceptance distribution (Easy/Medium/Hard).</p>
                     <button
                       type="button"
-                      onClick={handleStartEdit}
-                      className="w-full text-center py-2 bg-brand-indigo/10 border border-royal/20 rounded-xl text-brand-indigo font-bold text-xs hover:bg-brand-indigo/10 transition"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStartEdit();
+                      }}
+                      className="w-full text-center py-2 bg-brand-indigo/10 border border-royal/20 rounded-xl text-brand-indigo font-bold text-xs hover:bg-brand-indigo/20 transition"
                     >
                       Configure LeetCode Account
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* GeeksforGeeks Panel */}
+              <div 
+                onClick={() => {
+                  if (currentUser.gfgHandle) {
+                    window.open(`https://www.geeksforgeeks.org/user/${currentUser.gfgHandle}/`, '_blank', 'noopener,noreferrer');
+                  } else {
+                    handleStartEdit();
+                  }
+                }}
+                title={currentUser.gfgHandle ? `Open @${currentUser.gfgHandle} on GeeksforGeeks` : "Click to link GeeksforGeeks handle"}
+                className={`bg-[#110e1b] border border-slate-800/80 p-6 rounded-2xl relative overflow-hidden group cursor-pointer transition-all duration-200 hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/10 ${
+                  currentUser.gfgHandle ? 'hover:-translate-y-0.5' : ''
+                }`}
+              >
+                <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
+                  <BookOpen className="w-24 h-24 text-emerald-500" />
+                </div>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <span className="px-2.5 py-1 text-xs font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full">
+                      GeeksforGeeks
+                    </span>
+                    <h3 className="text-xl font-bold text-slate-100 mt-3 flex items-center gap-2 group-hover:text-emerald-400 transition-colors">
+                      {currentUser.gfgHandle ? `@${currentUser.gfgHandle}` : 'Not Linked'}
+                      {currentUser.gfgHandle && (
+                        <ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors" />
+                      )}
+                    </h3>
+                  </div>
+                </div>
+                {currentUser.gfgHandle ? (
+                  <div className="grid grid-cols-2 gap-4 mt-6 pt-4 border-t border-slate-800/80">
+                    <div>
+                      <p className="text-xs text-slate-500 uppercase">Handle</p>
+                      <p className="text-sm font-semibold text-emerald-400 mt-1 truncate">
+                        {currentUser.gfgHandle}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-500 uppercase">Status</p>
+                      <p className="text-sm font-semibold text-emerald-400 mt-1">
+                        Active
+                      </p>
+                    </div>
+                    <div className="col-span-2">
+                      <p className="text-xs text-slate-500">Click to view public practice profile and problem history on GFG.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-8 space-y-4">
+                    <p className="text-xs text-slate-500">Link your GeeksforGeeks handle to track POTD streaks and problem statistics.</p>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStartEdit();
+                      }}
+                      className="w-full text-center py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 font-bold text-xs hover:bg-emerald-500/20 transition"
+                    >
+                      Configure GFG Account
                     </button>
                   </div>
                 )}

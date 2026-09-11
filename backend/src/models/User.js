@@ -60,6 +60,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  gfgHandle: {
+    type: String,
+    default: ''
+  },
   friends: {
     type: [String], // Array of handles or user IDs
     default: []

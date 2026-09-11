@@ -55,6 +55,15 @@ router.post('/:userId/sync', async (req, res) => {
       );
     }
 
+    // Sync GeeksforGeeks
+    if (user.gfgHandle) {
+      syncPromises.push(
+        apiService.fetchGeeksforGeeks(user.gfgHandle).then(data => {
+          if (data) return dbHelper.upsertStatistics(userId, 'GeeksforGeeks', data);
+        }).catch(err => console.error(`GFG Sync Failed: ${err.message}`))
+      );
+    }
+
     await Promise.all(syncPromises);
     
     // Fetch and return the updated statistics

@@ -1,91 +1,57 @@
 /* eslint-disable */
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Calendar, CheckCircle2, ExternalLink, Flame, ChevronRight, Zap } from 'lucide-react';
+import { Calendar, CheckCircle2, ExternalLink, Flame, Zap, RefreshCw } from 'lucide-react';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
 
-export default function Potd({ currentUser, onUpdate }) {
+export default function Potd({ currentUser, stats }) {
   const [liveLcPotd, setLiveLcPotd] = useState(null);
   const [liveGfgPotd, setLiveGfgPotd] = useState(null);
   
-  const [progress, setProgress] = useState({});
-  const [lcPotdProgress, setLcPotdProgress] = useState([]);
-  const [gfgPotdProgress, setGfgPotdProgress] = useState([]);
+  const [lcStats, setLcStats] = useState({ streak: 0, totalSolved: 0, todaySolved: false });
+  const [gfgStats, setGfgStats] = useState({ streak: 0, totalSolved: 0, todaySolved: false });
+  
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      
-      // Fetch Live POTDs
-      Promise.allSettled([
+  const fetchPotdData = async () => {
+    setIsLoading(true);
+    
+    // 1. Fetch Live POTDs
+    try {
+      const [lcRes, gfgRes] = await Promise.allSettled([
         axios.get(`${BACKEND_URL}/potd`),
         axios.get(`${BACKEND_URL}/potd/gfg`)
-      ]).then((results) => {
-        if (results[0].status === 'fulfilled') setLiveLcPotd(results[0].value.data);
-        else console.error('Failed to fetch LeetCode POTD', results[0].reason);
-        
-        if (results[1].status === 'fulfilled') setLiveGfgPotd(results[1].value.data);
-        else console.error('Failed to fetch GFG POTD', results[1].reason);
-      });
+      ]);
 
-      // Fetch user progress
-      if (currentUser?._id) {
-        try {
-          const res = await axios.get(`${BACKEND_URL}/sheet/${currentUser._id}`);
-          const progressMap = {};
-          const lcProg = [];
-          const gfgProg = [];
-          
-          res.data.forEach(item => {
-            progressMap[item.problemId] = item.status;
-            if (item.status === 'solved') {
-              if (item.patternId === 'potd') lcProg.push(item);
-              if (item.patternId === 'gfg_potd') gfgProg.push(item);
-            }
-          });
-          setProgress(progressMap);
-          setLcPotdProgress(lcProg);
-          setGfgPotdProgress(gfgProg);
-        } catch (err) {
-          console.error('Failed to load sheet progress:', err);
-        }
+      if (lcRes.status === 'fulfilled') setLiveLcPotd(lcRes.value.data);
+      if (gfgRes.status === 'fulfilled') setLiveGfgPotd(gfgRes.value.data);
+    } catch (e) {
+      console.error('Error loading POTDs:', e);
+    }
+
+    // 2. Automatically fetch live streak & POTD solved counts from LC & GFG for currentUser
+    if (currentUser?._id) {
+      try {
+        const res = await axios.get(`${BACKEND_URL}/potd/user-stats/${currentUser._id}`);
+        if (res.data?.leetcode) setLcStats(res.data.leetcode);
+        if (res.data?.geeksforgeeks) setGfgStats(res.data.geeksforgeeks);
+      } catch (err) {
+        console.warn('Failed to load user live POTD stats:', err);
       }
-      setIsLoading(false);
-    };
-    fetchData();
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchPotdData();
   }, [currentUser]);
 
-  const toggleStatus = async (problemId, patternId) => {
-    if (!currentUser?._id) return;
-    const currentStatus = progress[problemId];
-    const newStatus = currentStatus === 'solved' ? 'unsolved' : 'solved';
-
-    setProgress(prev => ({ ...prev, [problemId]: newStatus }));
-
-    try {
-      const res = await axios.post(`${BACKEND_URL}/sheet/update`, {
-        userId: currentUser._id,
-        problemId,
-        patternId,
-        status: newStatus
-      });
-      
-      if (patternId === 'potd') {
-        if (newStatus === 'solved') setLcPotdProgress(prev => [...prev, res.data]);
-        else setLcPotdProgress(prev => prev.filter(p => p.problemId !== problemId));
-      } else if (patternId === 'gfg_potd') {
-        if (newStatus === 'solved') setGfgPotdProgress(prev => [...prev, res.data]);
-        else setGfgPotdProgress(prev => prev.filter(p => p.problemId !== problemId));
-      }
-      
-      if (onUpdate) onUpdate();
-    } catch (err) {
-      console.error('Failed to update status:', err);
-      // Revert optimistic update
-      setProgress(prev => ({ ...prev, [problemId]: currentStatus }));
-    }
+  const handleManualRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchPotdData();
+    setIsRefreshing(false);
   };
 
   const getDifficultyColor = (diff) => {
@@ -97,63 +63,37 @@ export default function Potd({ currentUser, onUpdate }) {
     }
   };
 
-  const calculateStreak = (progressArray) => {
-    if (progressArray.length === 0) return 0;
-    const dates = [...new Set(
-      progressArray
-        .map(p => p.updatedAt ? new Date(p.updatedAt) : null)
-        .filter(d => d && !isNaN(d.valueOf()))
-        .map(d => d.toISOString().split('T')[0])
-    )].sort();
-    if (dates.length === 0) return 0;
-    
-    let currentStreak = 0;
-    const todayStr = new Date().toISOString().split('T')[0];
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
-    
-    if (dates.includes(todayStr) || dates.includes(yesterdayStr)) {
-      currentStreak = 1;
-      let check = dates.includes(todayStr) ? todayStr : yesterdayStr;
-      while (true) {
-        const d = new Date(check + 'T00:00:00Z');
-        d.setUTCDate(d.getUTCDate() - 1);
-        const prev = d.toISOString().split('T')[0];
-        if (dates.includes(prev)) {
-          currentStreak++;
-          check = prev;
-        } else {
-          break;
-        }
-      }
-    }
-    return currentStreak;
-  };
+  // Fallback solved count from stats if available
+  const lcSolvedFromStats = stats?.find(s => s.platform === 'LeetCode')?.solvedCount || 0;
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center h-64">
         <div className="w-8 h-8 rounded-full border-4 border-brand-indigo border-t-transparent animate-spin"></div>
       </div>
     );
   }
 
-  const isLcSolved = liveLcPotd && progress[liveLcPotd.id] === 'solved';
-  const isGfgSolved = liveGfgPotd && progress[liveGfgPotd.id] === 'solved';
-
   return (
     <div className="animate-fadeIn space-y-8 pb-12">
       {/* Header */}
-      <div className="flex justify-between items-end pb-4 border-b border-slate-800/60 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-slate-800/60 mb-8">
         <div>
           <p className="text-[10px] font-bold text-brand-indigo uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-            <Flame className="w-4 h-4 text-orange-500" /> Daily Challenge
+            <Flame className="w-4 h-4 text-orange-500" /> Daily Challenge Tracker
           </p>
           <h1 className="text-4xl font-extrabold tracking-tight text-white">
             Problem of the <span className="text-brand-purple">day</span>
           </h1>
         </div>
+        <button
+          onClick={handleManualRefresh}
+          disabled={isRefreshing}
+          className="flex items-center gap-2 px-4 py-2 bg-[#110e1b] border border-slate-800/80 rounded-xl text-xs font-bold text-slate-300 hover:text-brand-indigo hover:border-brand-indigo/40 transition disabled:opacity-50 self-start sm:self-auto"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-brand-indigo' : ''}`} />
+          {isRefreshing ? 'Syncing...' : 'Sync Live Streaks'}
+        </button>
       </div>
 
       {/* Hero Section: Platform Columns */}
@@ -164,7 +104,7 @@ export default function Potd({ currentUser, onUpdate }) {
           {/* LeetCode POTD */}
           {liveLcPotd && (
             <div className="bg-white dark:bg-[#110e1b] border border-slate-200 dark:border-slate-800/80 rounded-3xl p-8 shadow-sm dark:shadow-2xl relative overflow-hidden group flex-1">
-              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none">
                 <Calendar className="w-32 h-32 text-brand-indigo" />
               </div>
               
@@ -184,33 +124,28 @@ export default function Potd({ currentUser, onUpdate }) {
                   <span className={`px-3 py-1 rounded-lg text-xs font-bold border ${getDifficultyColor(liveLcPotd.difficulty)}`}>
                     {liveLcPotd.difficulty}
                   </span>
+                  {lcStats.todaySolved && (
+                    <span className="text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Solved Today on LeetCode
+                    </span>
+                  )}
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center gap-4 mt-auto">
+                <div className="flex items-center gap-4 mt-auto">
                   <a 
                     href={liveLcPotd.link} 
                     target="_blank" 
                     rel="noreferrer"
-                    className="w-full sm:w-auto px-6 py-3 bg-white dark:bg-slate-800 text-blue-950 dark:text-white font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors shadow-lg shadow-white/10 flex items-center justify-center gap-2 text-sm"
+                    className="w-full sm:w-auto px-8 py-3 bg-brand-indigo text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-brand-indigo/20 flex items-center justify-center gap-2 text-sm"
                   >
                     Start Problem <ExternalLink className="w-4 h-4" />
                   </a>
-                  <button
-                    onClick={() => toggleStatus(liveLcPotd.id, 'potd')}
-                    className={`w-full sm:w-auto px-6 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border text-sm ${isLcSolved ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30' : 'bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-brand-indigo hover:text-white hover:border-brand-indigo'}`}
-                  >
-                    {isLcSolved ? (
-                      <> <CheckCircle2 className="w-4 h-4" /> Completed </>
-                    ) : (
-                      'Mark as Solved'
-                    )}
-                  </button>
                 </div>
               </div>
             </div>
           )}
 
-          {/* LeetCode Streak */}
+          {/* LeetCode Streak Tracker */}
           <div className="bg-white dark:bg-[#110e1b] border border-slate-200 dark:border-slate-800/80 rounded-3xl p-8 shadow-sm dark:shadow-2xl flex flex-col items-center justify-center text-center relative overflow-hidden h-64">
             <div className="absolute top-0 left-0 w-full h-full bg-brand-indigo/5 opacity-50 pointer-events-none"></div>
             <div className="p-4 bg-brand-indigo/10 rounded-2xl text-brand-indigo mb-6">
@@ -220,13 +155,15 @@ export default function Potd({ currentUser, onUpdate }) {
             <div className="flex items-center gap-8">
               <div>
                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Solved</p>
-                <div className="text-4xl font-black text-slate-800 dark:text-slate-200">{lcPotdProgress.length}</div>
+                <div className="text-4xl font-black text-slate-800 dark:text-slate-200">
+                  {lcStats.totalSolved || lcSolvedFromStats}
+                </div>
               </div>
               <div className="w-px h-12 bg-slate-200 dark:bg-slate-800"></div>
               <div>
                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Current Streak</p>
                 <div className="text-4xl font-black text-brand-purple flex items-baseline gap-1">
-                  {calculateStreak(lcPotdProgress)}
+                  {lcStats.streak}
                   <span className="text-sm font-bold text-slate-500">Days</span>
                 </div>
               </div>
@@ -239,7 +176,7 @@ export default function Potd({ currentUser, onUpdate }) {
           {/* GeeksForGeeks POTD */}
           {liveGfgPotd && (
             <div className="bg-white dark:bg-[#110e1b] border border-slate-200 dark:border-slate-800/80 rounded-3xl p-8 shadow-sm dark:shadow-2xl relative overflow-hidden group flex-1">
-              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none">
                 <Calendar className="w-32 h-32 text-emerald-500" />
               </div>
               
@@ -259,33 +196,28 @@ export default function Potd({ currentUser, onUpdate }) {
                   <span className={`px-3 py-1 rounded-lg text-xs font-bold border ${getDifficultyColor(liveGfgPotd.difficulty)}`}>
                     {liveGfgPotd.difficulty}
                   </span>
+                  {gfgStats.todaySolved && (
+                    <span className="text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Solved Today on GFG
+                    </span>
+                  )}
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center gap-4 mt-auto">
+                <div className="flex items-center gap-4 mt-auto">
                   <a 
                     href={liveGfgPotd.link} 
                     target="_blank" 
                     rel="noreferrer"
-                    className="w-full sm:w-auto px-6 py-3 bg-emerald-500 text-white font-bold rounded-xl hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 text-sm"
+                    className="w-full sm:w-auto px-8 py-3 bg-emerald-500 text-white font-bold rounded-xl hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 text-sm"
                   >
                     Start Problem <ExternalLink className="w-4 h-4" />
                   </a>
-                  <button
-                    onClick={() => toggleStatus(liveGfgPotd.id, 'gfg_potd')}
-                    className={`w-full sm:w-auto px-6 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border text-sm ${isGfgSolved ? 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30' : 'bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-emerald-500 hover:text-white hover:border-emerald-500'}`}
-                  >
-                    {isGfgSolved ? (
-                      <> <CheckCircle2 className="w-4 h-4" /> Completed </>
-                    ) : (
-                      'Mark as Solved'
-                    )}
-                  </button>
                 </div>
               </div>
             </div>
           )}
 
-          {/* GeeksForGeeks Streak */}
+          {/* GeeksForGeeks Streak Tracker */}
           <div className="bg-white dark:bg-[#110e1b] border border-slate-200 dark:border-slate-800/80 rounded-3xl p-8 shadow-sm dark:shadow-2xl flex flex-col items-center justify-center text-center relative overflow-hidden h-64">
             <div className="absolute top-0 left-0 w-full h-full bg-emerald-500/5 opacity-50 pointer-events-none"></div>
             <div className="p-4 bg-emerald-500/10 rounded-2xl text-emerald-500 mb-6">
@@ -295,13 +227,13 @@ export default function Potd({ currentUser, onUpdate }) {
             <div className="flex items-center gap-8">
               <div>
                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Solved</p>
-                <div className="text-4xl font-black text-slate-800 dark:text-slate-200">{gfgPotdProgress.length}</div>
+                <div className="text-4xl font-black text-slate-800 dark:text-slate-200">{gfgStats.totalSolved}</div>
               </div>
               <div className="w-px h-12 bg-slate-200 dark:bg-slate-800"></div>
               <div>
                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Current Streak</p>
                 <div className="text-4xl font-black text-emerald-500 flex items-baseline gap-1">
-                  {calculateStreak(gfgPotdProgress)}
+                  {gfgStats.streak}
                   <span className="text-sm font-bold text-slate-500">Days</span>
                 </div>
               </div>

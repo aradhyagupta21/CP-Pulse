@@ -308,7 +308,7 @@ export default function App() {
       case 'cp31':
         return <Cp31Sheet />;
       case 'potd':
-        return <Potd currentUser={currentUser} onUpdate={fetchGoalsOnly} />;
+        return <Potd currentUser={currentUser} stats={stats} onUpdate={fetchGoalsOnly} />;
       default:
         return <div className="text-slate-400">Section not found.</div>;
     }

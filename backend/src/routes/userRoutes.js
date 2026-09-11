@@ -35,7 +35,7 @@ router.get('/:username', async (req, res) => {
 // Create/Signup user
 router.post('/signup', async (req, res) => {
   try {
-    const { username, email, password, fullName, location, college, branch, graduationYear, cgpa, codeforcesHandle, codechefHandle, leetcodeHandle } = req.body;
+    const { username, email, password, fullName, location, college, branch, graduationYear, cgpa, codeforcesHandle, codechefHandle, leetcodeHandle, gfgHandle } = req.body;
     if (!username || !password || !fullName || !location || !college) {
       return res.status(400).json({ error: 'Username, password, full name, location, and college are required.' });
     }
@@ -58,6 +58,7 @@ router.post('/signup', async (req, res) => {
       codeforcesHandle: codeforcesHandle || '',
       codechefHandle: codechefHandle || '',
       leetcodeHandle: leetcodeHandle || '',
+      gfgHandle: gfgHandle || '',
       friends: []
     });
 
@@ -73,7 +74,7 @@ router.post('/signup', async (req, res) => {
 // Register user profile from dashboard (without requiring a password)
 router.post('/register', async (req, res) => {
   try {
-    const { username, codeforcesHandle, codechefHandle, leetcodeHandle } = req.body;
+    const { username, codeforcesHandle, codechefHandle, leetcodeHandle, gfgHandle } = req.body;
     if (!username) {
       return res.status(400).json({ error: 'Username is required.' });
     }
@@ -89,6 +90,7 @@ router.post('/register', async (req, res) => {
       codeforcesHandle: codeforcesHandle || '',
       codechefHandle: codechefHandle || '',
       leetcodeHandle: leetcodeHandle || '',
+      gfgHandle: gfgHandle || '',
       friends: []
     });
 
@@ -163,7 +165,7 @@ router.put('/:username/password', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { username, email, phone, fullName, location, college, branch, graduationYear, cgpa, codeforcesHandle, codechefHandle, leetcodeHandle } = req.body;
+    const { username, email, phone, fullName, location, college, branch, graduationYear, cgpa, codeforcesHandle, codechefHandle, leetcodeHandle, gfgHandle } = req.body;
     
     // Validate username uniqueness if it's being updated
     if (username !== undefined) {
@@ -179,6 +181,7 @@ router.put('/:id', async (req, res) => {
     if (codeforcesHandle !== undefined) updateData.codeforcesHandle = codeforcesHandle;
     if (codechefHandle !== undefined) updateData.codechefHandle = codechefHandle;
     if (leetcodeHandle !== undefined) updateData.leetcodeHandle = leetcodeHandle;
+    if (gfgHandle !== undefined) updateData.gfgHandle = gfgHandle;
     if (username !== undefined) updateData.username = username;
     if (fullName !== undefined) updateData.fullName = fullName;
     if (location !== undefined) updateData.location = location;
